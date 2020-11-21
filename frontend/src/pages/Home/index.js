@@ -15,8 +15,11 @@ class Home extends Component {
     }
 
     render() {
+        const { classes } = this.props;
+
         return (
             <div>
+                <br/>
                 Content
             </div>
         )
