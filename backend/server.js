@@ -36,12 +36,6 @@ const dataSchema = mongoose.Schema({
 
 const Data = mongoose.model("Data", dataSchema)
 
-Data.find((err, result) => {
-    if (err) return console.error(err);
-    console.log(result);
-    return result
-})
-
 module.exports = {db, Data}
 app.use(cors());
 
