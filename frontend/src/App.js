@@ -4,7 +4,7 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      Due Diligence for Dummies
+      Due Diligence for Dummies!
     </div>
   );
 }

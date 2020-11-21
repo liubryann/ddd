@@ -43,5 +43,10 @@ class Scraper:
 if __name__ == "__main__":
     scraper = Scraper(CLIENT_ID, CLIENT_SECRET, USER_AGENT)
     # print(scraper.basic("investing", 10))
-    print(scraper.search("NIO", "investing", 10, "month"))
+    with open("test.json", "w") as f:
+        f.write(
+            scraper.search("NIO", "investing", 10, "month").to_json(
+                default_handler=str, orient="records"
+            )
+        )
 
