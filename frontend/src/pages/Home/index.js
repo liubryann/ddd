@@ -8,8 +8,9 @@ const styles = (theme) => ({
 
 });
 
-class Main extends Component {
+class Home extends Component {
     constructor() {
+        super();
         this.state ={};
     }
 
@@ -22,7 +23,7 @@ class Main extends Component {
     }
 }
 
-Main.propTypes = {
+Home.propTypes = {
    
 };
 
@@ -34,4 +35,4 @@ const mapDispatchToProps = () => {
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Main));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Home));
