@@ -28,6 +28,7 @@ app.get("/getAnalysis", function (req, res) {
 
 });
 
-app.listen(PORT, function () {
+app.listen(PORT, function (req,res) {
   console.log("Server is running on Port " + PORT);
+  res.send("hi, im in the back")
 });
