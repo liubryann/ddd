@@ -81,10 +81,11 @@ def process(text_content):
     Args:
       text_content The text content to process.
     '''
+    
     return json.dumps({
         "summary": summarize_text(text_content, 20),
         "sector": classify_text(text_content),
-        "sentiment_details": analyze_sentiment(text_content)
+        "sentiment_details": analyze_sentiment(text_content)["sentiment"]
     })
 
 
