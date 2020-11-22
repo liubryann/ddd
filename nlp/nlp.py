@@ -1,12 +1,14 @@
 from google.cloud import language_v1
-from gensim.summarization.summarizer import summarize 
-from gensim.summarization import keywords 
-
+from gensim.summarization.summarizer import summarize
+from gensim.summarization import keywords
+from argparse import ArgumentParser
+import json
 # pip install --upgrade google-cloud-language
 # pip install --upgrade gensim
 
 document = {"type_": language_v1.Document.Type.PLAIN_TEXT, "language": "en"}
 encoding_type = language_v1.EncodingType.UTF8
+
 
 def analyze_sentiment(text_content):
     """
@@ -19,9 +21,11 @@ def analyze_sentiment(text_content):
     output = {}
     client = language_v1.LanguageServiceClient()
     document["content"] = text_content
-    response = client.analyze_sentiment(request = {'document': document, 'encoding_type': encoding_type})
+    response = client.analyze_sentiment(
+        request={'document': document, 'encoding_type': encoding_type})
 
-    print("Document sentiment score: {}".format(response.document_sentiment.score))
+    print("Document sentiment score: {}".format(
+        response.document_sentiment.score))
     print(
         "Document sentiment magnitude: {}".format(
             response.document_sentiment.magnitude
@@ -42,7 +46,7 @@ def classify_text(text_content):
 
     client = language_v1.LanguageServiceClient()
     document["content"] = text_content
-    response = client.classify_text(request = {'document': document})
+    response = client.classify_text(request={'document': document})
     output = {
         "Category name": "{}",
         "Confidence": "{}"
@@ -54,18 +58,19 @@ def classify_text(text_content):
         output["Confidence"] = output["Confidence"].format(category.name)
     return output
 
-def summarize_text(text_content, word_count):
+
+def summarize_text(text_content, word_count=20):
     """
     Summarizing Content in a String using Extractive Summarization
-    
+
     Args:
       text_content The text content to summarize.
       word_count The word count of the target summary
     """
 
-    summ_words = summarize(text_content, word_count = word_count) 
-    print("Word count summary") 
-    print(summ_words) 
+    summ_words = summarize(text_content, word_count=word_count)
+    print("Word count summary")
+    print(summ_words)
     return summ_words
 
 
@@ -76,8 +81,31 @@ def process(text_content):
     Args:
       text_content The text content to process.
     '''
-    return {
+    return json.dumps({
         "summary": summarize_text(text_content, 20),
         "sector": classify_text(text_content),
         "sentiment_details": analyze_sentiment(text_content)
+    })
+
+
+if __name__ == "__main__":
+    options = {
+        "sentiment": analyze_sentiment,
+        "classify": classify_text,
+        "summarize": summarize_text,
+        "process": process
     }
+    parser = ArgumentParser(description="Process raw text")
+    parser.add_argument('option',
+                        type=str,
+                        choices=options.keys(),
+                        help="Action to perform on text")
+    parser.add_argument('text',
+                        type=str,
+                        help="Raw input text")
+
+    args = parser.parse_args()
+    index = args.option
+    action = options[index]
+    text_content = args.text
+    action(text_content)
