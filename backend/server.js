@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 4000;
 
 app.use(cors());
 
-app.get("/", function (req, res) {
+app.get("/getAnalysis", function (req, res) {
   let symbol = req.query.symbol;
   let date = req.query.range;
   
