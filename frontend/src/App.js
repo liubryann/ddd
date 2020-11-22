@@ -1,6 +1,6 @@
 import './App.css';
 // Theme
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import themeObj from './util/theme';
 // Redux
