@@ -70,7 +70,7 @@ def summarize_text(text_content, word_count=20):
     try:
         summ_words = summarize(text_content, word_count=word_count)
     except:
-        summ_words = ""
+        summ_words = text_content
     
     print("Word count summary")
     print(summ_words)
