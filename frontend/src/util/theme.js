@@ -7,9 +7,9 @@ const theme = {
             contrastText: '#000000'
           },
           secondary: {
-            light: '#7b5e57',
-            main: '#4e342e',
-            dark: '#260e04',
+            light: '#484848',
+            main: '#212121',
+            dark: '#000000',
             contrastText: '#fff'
           }
     }
