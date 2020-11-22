@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 
 import withStyles from "@material-ui/core/styles/withStyles";
 
+// Components
+import Stock from '../../components/Stock';
 const styles = (theme) => ({
 
 });
@@ -19,8 +21,7 @@ class Home extends Component {
 
         return (
             <div>
-                <br/>
-                Content
+                <Stock />
             </div>
         )
     }
