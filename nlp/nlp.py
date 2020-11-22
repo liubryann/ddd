@@ -67,8 +67,11 @@ def summarize_text(text_content, word_count=20):
       text_content The text content to summarize.
       word_count The word count of the target summary
     """
-
-    summ_words = summarize(text_content, word_count=word_count)
+    try:
+        summ_words = summarize(text_content, word_count=word_count)
+    except:
+        summ_words = ""
+    
     print("Word count summary")
     print(summ_words)
     return summ_words
@@ -85,7 +88,7 @@ def process(text_content):
     return json.dumps({
         "summary": summarize_text(text_content, 20),
         "sector": classify_text(text_content),
-        "sentiment_details": analyze_sentiment(text_content)["sentiment"]
+        "sentiment_details": analyze_sentiment(text_content)
     })
 
 
