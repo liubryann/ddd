@@ -18,7 +18,8 @@ const useStyles = makeStyles((theme) => ({
     },
     bar: {
         position: "static",
-        color: theme.palette.primary
+        color: theme.palette.primary,
+        alignItems: 'center'
     },
     title: {
         flex: 1
@@ -71,7 +72,7 @@ function NavBar() {
                 <Toolbar>
                     <Typography variant="h6" className={classes.title}>Due Diligence for Dummies</Typography>
 
-                    <div className={classes.search}>
+                    {/* <div className={classes.search}>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
                         </div>
@@ -89,7 +90,7 @@ function NavBar() {
                         onClick={() => {}}
                     >
                         <BookmarksIcon />
-                    </CustomButton>
+                    </CustomButton> */}
                 </Toolbar>
             </AppBar> 
         </div>

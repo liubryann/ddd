@@ -1,1 +1,3 @@
-// add export const types here
+export const ANALYSIS_START = 'ANALYSIS_START';
+export const SET_ANALYSIS = 'SET_ANALYSIS'; 
+export const ANALYSIS_ERROR = 'ANALYSIS_ERROR';
