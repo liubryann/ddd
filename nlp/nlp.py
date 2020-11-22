@@ -109,4 +109,6 @@ if __name__ == "__main__":
     index = args.option
     action = options[index]
     text_content = args.text
-    action(text_content)
+    
+    with open("dump.json", "w") as f:
+        f.write(json.dumps(action(text_content)))

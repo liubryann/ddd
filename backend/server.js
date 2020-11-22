@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const fs = require('fs');
 import { PythonShell } from "python-shell";
 PythonShell.defaultOptions = { scriptPath: "../" };
 require("dotenv").config();
@@ -40,17 +41,18 @@ app.get("/", function (req, res) {
   let options = {
     mode: "text",
     scriptPath: "../",
-    args: [source, symbol, date],
+    args: [symbol, date],
   };
 
   let text_content;
-  PythonShell.run("webscraper/scraper.py", options, function (err, result) {
+ PythonShell.run("webscraper/scraper.py", options, function (err, result) {
     if (err) throw err;
-    text_content = result;
+    text_content = JSON.parse(result);
+    text_content = JSON.parse(fs.readFileSync("/dump.json"));
   });
   count = 0
   total_feeling = 0
-  JSON.parse(text_content["people"]).forEach((data) => {
+  text_content["people"].forEach((data) => {
     count = count + 1
     options[args] = ["process", data["data"]];
     PythonShell.run("nlp/nlp.py", options, function (err, result) {
@@ -67,7 +69,7 @@ app.get("/", function (req, res) {
   processed_data["peopleAVG"] = sentiment(total_feeling/count)
   count = 0
   total_feeling = 0
-  JSON.parse(text_content["corporation"]).forEach((data) => {
+  text_content["corporation"].forEach((data) => {
     count = count + 1
     options[args] = ["process", data["data"]];
     PythonShell.run("nlp/nlp.py", options, function (err, result) {
