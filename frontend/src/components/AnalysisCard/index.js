@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
 
 function AnalysisCard(props) {
     const classes = useStyles();
-    const { title, summary } = props; 
+    const { title, summary, sentiment } = props; 
     return (
         <Card className={classes.card} variant="outlined">
             <CardContent>
@@ -21,6 +21,9 @@ function AnalysisCard(props) {
                 </Typography>
                 <Typography variant="body2" className={classes.summary}>
                     {summary}
+                </Typography>
+                <Typography variant="subtitle1" className={classes.summary}>
+                    {sentiment}
                 </Typography>
             </CardContent>
         </Card>

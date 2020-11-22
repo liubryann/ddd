@@ -6,7 +6,6 @@ from dateutil.relativedelta import relativedelta
 import pyjq
 import json
 import os
-import pandas as pd
 from argparse import ArgumentParser
 from dotenv import load_dotenv
 import requests
@@ -28,7 +27,7 @@ class Scraper:
         hot_posts = self.reddit.subreddit(subreddit).hot(limit=limit)
         return self.postFormatter(hot_posts)
 
-    def postFormatter(self, posts: pd.DataFrame) -> pd.DataFrame:
+    def postFormatter(self, posts):
         retPosts = []
         for post in posts:
             retPost = {}

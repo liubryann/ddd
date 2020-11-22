@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 4000;
 
 app.use(cors());
 
-app.get("/", function (req, res) {
+app.get("/getAnalysis", function (req, res) {
   let symbol = req.query.symbol;
   let date = req.query.range;
   
@@ -31,3 +31,7 @@ app.get("/", function (req, res) {
 app.listen(PORT, function () {
   console.log("Server is running on Port " + PORT);
 });
+
+// app.get("/test", function (req, res) {
+//   return res.json({people: [{title: "Hello", summary: "wagwan"}], corporation: [{title: "kms", summary: "I wanna sleep"}], peopleAverage: "Strongly Positive", corporationAverage: "Mixed"})
+// })

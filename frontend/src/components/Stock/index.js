@@ -12,6 +12,7 @@ import Button from '@material-ui/core/Button';
 import { FormHelperText, Typography } from "@material-ui/core";
 import { Paper } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import AnalysisCard from '../../components/AnalysisCard';
 
@@ -43,7 +44,7 @@ const styles = (theme) => ({
         justifyContent: 'center',
     },
     paper: {
-        height: '75vh',
+        height: '70vh',
         width: '60%',
         paddingTop: theme.spacing(3),
         paddingBottom: theme.spacing(3),
@@ -56,9 +57,9 @@ const styles = (theme) => ({
         flexDirection: 'row',
         justifyContent: 'space-evenly'
     },
-    data: {
-        overflow: 'scroll'
-    }
+    progress: {
+        position: "absolute",
+      },
 });
 
 class Stock extends Component {
@@ -70,8 +71,8 @@ class Stock extends Component {
             analysis: { 
                 people: [],
                 corporation: [],
-                peopleAverage: 'Mixed',
-                corporationAverage: 'Neutral'
+                peopleAVG: 'Neutral',
+                corporationAVG: 'Neutral'
             },
             error: {}
         };
@@ -91,9 +92,6 @@ class Stock extends Component {
         }
 
         await this.props.getAnalysis(query);
-        this.setState({
-            analysis: this.props.stock.analysis
-        })
     }
 
     handlePeopleSentiment = (sentiment) => {
@@ -146,17 +144,17 @@ class Stock extends Component {
         const { classes } = this.props;
         const { loading } = this.props.stock;
         const { error } = this.state;
-        const { people, corporation, peopleAverage, corporationAverage} = this.state.analysis;
+        const { people, corporation, peopleAVG, corporationAVG} = this.state.analysis;
 
-        let peopleSentiment = this.handlePeopleSentiment(peopleAverage);
-        let corporationSentiment = this.handleCorporationSentiment(corporationAverage);
+        let peopleSentiment = this.handlePeopleSentiment(peopleAVG);
+        let corporationSentiment = this.handleCorporationSentiment(corporationAVG);
 
         let peopleAnalysis = (people.map((post) => (
-            <AnalysisCard title={post.title} summary={post.summary}/>
+            <AnalysisCard title={post.title} summary={post.summary} sentiment={this.handlePeopleSentiment(post.sentiment)} />
         )))
 
         let corporationAnalysis = (corporation.map((article) => (
-            <AnalysisCard title={article.title} summary={article.summary}/>
+            <AnalysisCard title={article.title} summary={article.summary} sentiment={this.handleCorporationSentiment(article.sentiment)} />
         )))
 
         return (
@@ -172,11 +170,11 @@ class Stock extends Component {
                             value={this.state.range}
                             onChange={this.handleChange}
                             >
-                            <MenuItem value={"Day"}>Day</MenuItem>
-                            <MenuItem value={"Week"}>Week</MenuItem>
-                            <MenuItem value={"Month"}>Month</MenuItem>
-                            <MenuItem value={"Year"}>Year</MenuItem>
-                            <MenuItem value={"All"}>All Time</MenuItem>
+                            <MenuItem value={"day"}>Day</MenuItem>
+                            <MenuItem value={"week"}>Week</MenuItem>
+                            <MenuItem value={"month"}>Month</MenuItem>
+                            <MenuItem value={"year"}>Year</MenuItem>
+                            <MenuItem value={"all"}>All Time</MenuItem>
                             </Select>
 
                             {error.range && (
@@ -199,6 +197,9 @@ class Stock extends Component {
                          />
                         <Button className={classes.button} type="submit" variant="contained" color="secondary" disabled={loading}>
                             Analyze
+                            {loading && (
+                                <CircularProgress size={30} className={classes.progress} />
+                            )}
                         </Button>
 
                     </div>
@@ -207,16 +208,16 @@ class Stock extends Component {
                     <Paper elevation={3} className={classes.paper}>
                         <Grid container spacing={3}>
                             <Grid item xs={6}>
-                            <Typography variant="subtitle1">🐵 Voice of the people 🐵</Typography>
+                            <Typography variant="h5">🐵 Voice of the people 🐵</Typography>
                             </Grid>
                             <Grid item xs={6}>
-                            <   Typography variant="subtitle1">🤖 Voice of the corporation 🤖</Typography>
+                            <   Typography variant="h5">🤖 Voice of the corporation 🤖</Typography>
                             </Grid>
                             <Grid item xs={6}>
-                                <Typography variant="subtitle1">{peopleSentiment}</Typography>
+                                <Typography variant="h6">{peopleSentiment}</Typography>
                             </Grid>
                             <Grid item xs={6}>
-                                <Typography variant="subtitle1">{corporationSentiment}</Typography>
+                                <Typography variant="h6">{corporationSentiment}</Typography>
                             </Grid>
                             <Grid item xs={6}>
                                  {peopleAnalysis}
