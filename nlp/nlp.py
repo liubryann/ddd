@@ -16,6 +16,7 @@ def analyze_sentiment(text_content):
       text_content The text content to analyze
     """
 
+    output = {}
     client = language_v1.LanguageServiceClient()
     document["content"] = text_content
     response = client.analyze_sentiment(request = {'document': document, 'encoding_type': encoding_type})
@@ -26,13 +27,14 @@ def analyze_sentiment(text_content):
             response.document_sentiment.magnitude
         )
     )
+    output["sentiment"] = response.document_sentiment.score
+    output["magnitude"] = response.document_sentiment.magnitude
+    return output
+    # for sentence in response.sentences:
+    #     print("Sentence text: {}".format(sentence.text.content))
+    #     print("Sentence sentiment score: {}".format(sentence.sentiment.score))
+    #     print("Sentence sentiment magnitude: {}".format(sentence.sentiment.magnitude))
 
-    for sentence in response.sentences:
-        print("Sentence text: {}".format(sentence.text.content))
-        print("Sentence sentiment score: {}".format(sentence.sentiment.score))
-        print("Sentence sentiment magnitude: {}".format(sentence.sentiment.magnitude))
-
-    print("Language of the text: {}".format(response.language))
 
 def classify_text(text_content):
     """
@@ -45,9 +47,16 @@ def classify_text(text_content):
     client = language_v1.LanguageServiceClient()
     document["content"] = text_content
     response = client.classify_text(request = {'document': document})
+    output = {
+        "Category name": "{}",
+        "Confidence": "{}"
+    }
     for category in response.categories:
         print("Category name: {}".format(category.name))
         print("Confidence: {}".format(category.confidence))
+        output["Category name"] = output["Category name"].format(category.name)
+        output["Confidence"] = output["Confidence"].format(category.name)
+    return output
 
 def summarize_text(text_content, word_count):
     """
@@ -61,7 +70,21 @@ def summarize_text(text_content, word_count):
     summ_words = summarize(text_content, word_count = word_count) 
     print("Word count summary") 
     print(summ_words) 
+    return summ_words
 
+
+def process(text_content):
+    '''
+    Process text into a dictionary
+
+    Args:
+      text_content The text content to process.
+    '''
+    return {
+        "summary": summarize_text(text_content, 20),
+        "sector": classify_text(text_content),
+        "sentiment_details": analyze_sentiment(text_content)
+    }
 
 def test():
     text = '''Keep in mind I believe this is the best case scenario possible. So thinking more conservative, the size of say Lexus in global sales is more likely. What I mean by this is that since Nio's beginning it has sold 50,000 vehicles in China alone. Most of the sales in fact during Covid-19. This is pretty impressive, even bearish people have to admit that, for a car/lifestyle brand founded in 2014. However, for Nio to be globally the size of Lexus, Nio has to sell 800,000+ cars annually. BMW sells 2,000,000+ cars annually. For a little more perspective Tesla models which are increasingly more and more common in Europe and the USA sold 360,000+ in 2019. Now there's two kinds of people reading this post, one person who thinks Nio being Chinese is an advantage, and another who thinks being Chinese is a disadvantage; and you'd both be correct. Bullish people will know that the Chinese car market is currently larger than the US market and the European market (though not combined), and the Chinese market is growing far faster, the Chinese EV market growing fastest of all. Bearish people will know that it's almost impossible (unless you're Tesla) for car makers to build a customer base in Europe. I mean even GM one of the largest manufacturers in the whole world have suffered trying. And that's just Europe, if you look at America, if you ask 100 people if they'd happily buy a Chinese branded vehicle, you'd be lucky if 6 said yes; due to anti-communist sentiment and the Chinese goods = cheap and poorly made reputation. So, now you're asking me, why the fuck do you think Nio can sell 2,000,000 a year, if Americans won't buy them full stop, and Europeans would rather one of their own European brands. That is because you're really underestimating China. Chinese people LOVE Chinese goods if they're proven to be of great quality. Look at Huawei, Huawei has a 36% market share in new phone sales in China. And Nio I believe is cut from the same cloth.
