@@ -86,12 +86,12 @@ if __name__ == "__main__":
         })
         else:
             pass
-        ppl = len(ret["people"])
-        corp = len(ret["corporation"])
-        if ppl != 0:
-            result["peopleAVG"] = feeling(ppl_sentiment/ppl, ppl_magnitude/ppl)
-        if corp != 0:    
-            result["corporationAVG"] = feeling(corp_sentiment/corp, corp_magnitude/corp)
+    ppl = len(ret["people"])
+    corp = len(ret["corporation"])
+    if ppl != 0:
+        result["peopleAVG"] = feeling(ppl_sentiment/ppl, ppl_magnitude/ppl)
+    if corp != 0:    
+        result["corporationAVG"] = feeling(corp_sentiment/corp, corp_magnitude/corp)
     print(result)
     with open("dump.json", "w") as f:
         f.write(json.dumps(result))
