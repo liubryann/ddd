@@ -1,3 +1,0 @@
-praw==7.1.0
-python-dotenv==0.15.0
-scrapy==2.4.1

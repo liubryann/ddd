@@ -5,7 +5,7 @@ const fs = require("fs");
 
 let { PythonShell } = require("python-shell");
 const { text } = require("express");
-PythonShell.defaultOptions = { scriptPath: "../" };
+PythonShell.defaultOptions = { scriptPath: "./" };
 require("dotenv").config();
 const PORT = process.env.PORT || 4000;
 
@@ -17,7 +17,7 @@ app.get("/getAnalysis", function (req, res) {
   
   let options = {
     mode: "text",
-    scriptPath: "../",
+    scriptPath: "./",
     args: [symbol, date],
   };
 
@@ -30,7 +30,7 @@ app.get("/getAnalysis", function (req, res) {
 
 app.listen(PORT, function (req,res) {
   console.log("Server is running on Port " + PORT);
-  res.send("hi, im in the back")
+  // res.send("hi, im in the back")
 });
 
 // app.get("/test", function (req, res) {
