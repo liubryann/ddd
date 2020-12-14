@@ -4,7 +4,7 @@ import logo from '../../ddd.svg';
 import { makeStyles, fade } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-// import Typography from '@material-ui/core/Typography';
+import Typography from '@material-ui/core/Typography';
 // import InputBase from '@material-ui/core/InputBase';
 // import SearchIcon from '@material-ui/icons/Search';
 // import BookmarksIcon from '@material-ui/icons/Bookmarks';
@@ -39,7 +39,7 @@ function NavBar() {
             <AppBar className={classes.bar}>
                 <Toolbar>
                     <img src={logo} className={classes.logo}/>
-                    {/* <Typography variant="h6" className={classes.title}>Due Diligence for Dummies</Typography> */}
+                    <Typography color="error" variant="body1" className={classes.title}>Warning: under continuous development</Typography>
 
                 </Toolbar>
             </AppBar> 
