@@ -7,7 +7,11 @@ import withStyles from "@material-ui/core/styles/withStyles";
 // Components
 import Stock from '../../components/Stock';
 const styles = (theme) => ({
-
+    background: {
+        backgroundColor: theme.palette.primary.main,
+        flexGrow: 1,
+        padding: theme.spacing(6) // change later
+    }
 });
 
 class Home extends Component {
@@ -20,7 +24,7 @@ class Home extends Component {
         const { classes } = this.props;
 
         return (
-            <div>
+            <div className={classes.background}>
                 <Stock />
             </div>
         )
