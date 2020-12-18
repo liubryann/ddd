@@ -21,11 +21,9 @@ function App() {
       <Provider store={store}>
         <Router>
           <NavBar />
-          <div className="App">
             <Switch>
               <Route exact path="/" component={Home}/>
             </Switch>
-          </div>
         </Router>
       </Provider>
     </MuiThemeProvider>
