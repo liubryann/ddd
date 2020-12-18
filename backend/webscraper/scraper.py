@@ -1,10 +1,10 @@
-import praw, re, pyjq, json, os, requests
+import praw, re, pyjq, json, os, requests, time
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from argparse import ArgumentParser
 from dotenv import load_dotenv
-
 from newsapi import NewsApiClient
+import concurrent.futures as cf
 
 
 load_dotenv()
@@ -26,12 +26,7 @@ class Scraper:
         )
         self.newsapi = NewsApiClient(api_key=NEWS_API_KEY)
 
-    def hotPostsReddit(self, subreddit="investing", limit=10):
-        hot_posts = self.reddit.subreddit(subreddit).hot(limit=limit)
-        return self.postFormatter(hot_posts)
-
-    def postFormatter(self, posts):
-        retPosts = []
+    def postFormatter(self, posts, retPosts):
         for post in posts:
             if len(post.selftext) >= 100:
                 retPost = {}
@@ -43,36 +38,43 @@ class Scraper:
                     retPost["data"] = retPost["data"][:401].strip() + "..."
                 retPosts.append(retPost)
 
-        return retPosts
-
     def scrapeReddit(
         self,
         query,
         time_filter="1mo",
     ):
-        subreddits = ["investing", "stocks", "news"]
+        subreddits = [
+            "investing",
+            "stocks",
+            "news",
+            "business",
+            "worldnews",
+        ]
         result = []
-        for subreddit in subreddits:
-            result.extend(self.scrapeSubreddit(query, subreddit, 3, time_filter))
+        with cf.ThreadPoolExecutor(1000) as executor:
+            [
+                executor.submit(
+                    self.scrapeSubreddit, query, result, subreddit, 15, time_filter
+                )
+                for subreddit in subreddits
+            ]
         return result
 
     def scrapeSubreddit(
         self,
         query,
+        data,
         subreddit="investing",
         limit=10,
         time_filter="1mo",
     ):
-
         try:
             time_filter = TIME_MAP[time_filter]
         except:
             time_filter = "month"
-        result = self.reddit.subreddit(subreddit).search(
-            query, sort="relevance", time_filter=time_filter
-        )
+        result = self.reddit.subreddit(subreddit).search(query)
         result.limit = limit
-        return self.postFormatter(result)
+        self.postFormatter(result, data)
 
     def getDates(self, time_range, format_dates=False):
         # defaults to 1 month
@@ -151,6 +153,19 @@ class Scraper:
         return retPosts
 
 
+def main(query, timeframe):
+    started = time.time()
+    scraper = Scraper(CLIENT_ID, CLIENT_SECRET, USER_AGENT)
+    ret = {
+        "people": scraper.scrapeReddit(query, time_filter=timeframe),
+        "corporation": scraper.scrapeNewsAPI(query, time_filter=timeframe),
+    }
+    with open("dump.json", "w") as f:
+        f.write(json.dumps(ret))
+    elapsed = time.time()
+    print("Time taken: :", elapsed - started)
+
+
 if __name__ == "__main__":
     parser = ArgumentParser(
         description="Get information about articles from various news sources."
@@ -166,12 +181,4 @@ if __name__ == "__main__":
     query = args.query
     timeframe = args.timeframe
 
-    scraper = Scraper(CLIENT_ID, CLIENT_SECRET, USER_AGENT)
-    ret = {
-        "people": scraper.scrapeReddit(query, time_filter=timeframe),
-        "corporation": scraper.scrapeNewsAPI(query, time_filter=timeframe)
-        #     "corporation": scraper.scrapeNYT(query, timeframe),
-    }
-    with open("dump.json", "w") as f:
-        f.write(json.dumps(ret))
-    # f.write(json.dumps(ret))
+    main(query, timeframe)
