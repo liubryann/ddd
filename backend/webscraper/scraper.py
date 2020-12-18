@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from newsapi import NewsApiClient
 import concurrent.futures as cf
 
+load_dotenv()
+CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 USER_AGENT = os.getenv("USER_AGENT")
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
@@ -69,7 +71,9 @@ class Scraper:
             time_filter = TIME_MAP[time_filter]
         except:
             time_filter = "month"
-        result = self.reddit.subreddit(subreddit).search(query)
+        result = self.reddit.subreddit(subreddit).search(
+            query, sort="relevance", time_filter=time_filter
+        )
         result.limit = limit
         self.postFormatter(result, data)
 
@@ -148,7 +152,6 @@ class Scraper:
                 continue
 
         return retPosts
-
 
 def main(query, timeframe):
     scraper = Scraper(CLIENT_ID, CLIENT_SECRET, USER_AGENT)
