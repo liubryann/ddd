@@ -1,4 +1,4 @@
-import praw, re, pyjq, json, os, requests, time
+import praw, re, pyjq, json, os, requests
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from argparse import ArgumentParser
@@ -6,9 +6,6 @@ from dotenv import load_dotenv
 from newsapi import NewsApiClient
 import concurrent.futures as cf
 
-
-load_dotenv()
-CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 USER_AGENT = os.getenv("USER_AGENT")
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
@@ -154,7 +151,6 @@ class Scraper:
 
 
 def main(query, timeframe):
-    started = time.time()
     scraper = Scraper(CLIENT_ID, CLIENT_SECRET, USER_AGENT)
     ret = {
         "people": scraper.scrapeReddit(query, time_filter=timeframe),
@@ -162,8 +158,6 @@ def main(query, timeframe):
     }
     with open("dump.json", "w") as f:
         f.write(json.dumps(ret))
-    elapsed = time.time()
-    print("Time taken: :", elapsed - started)
 
 
 if __name__ == "__main__":
