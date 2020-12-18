@@ -1,3 +1,6 @@
 .vscode/*
 demo.mov
 backend/dump.json
+backend/__pycache__/
+backend/webscraper/__pycache__/
+backend/redis/__pycache__/
