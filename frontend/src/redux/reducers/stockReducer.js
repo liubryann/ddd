@@ -1,9 +1,10 @@
-import { ANALYSIS_START, SET_ANALYSIS, ANALYSIS_ERROR } from '../types';
+import { ANALYSIS_START, SET_ANALYSIS, ANALYSIS_ERROR, SET_TICKER_DATA, SET_TICKER_ERROR } from '../types';
 
 const initialState = {
     loading: false, 
-    errors: {},
-    analysis: null
+    error: {},
+    analysis: null,
+    tickerData: null
 }
  
 export default function(state = initialState, action) {
@@ -21,6 +22,19 @@ export default function(state = initialState, action) {
                 analysis: action.payload
             };
         case ANALYSIS_ERROR: 
+            return {
+                ...state,
+                loading: false, 
+                error: action.payload
+            };
+        case SET_TICKER_DATA:
+            return {
+                ...state,
+                loading: false, 
+                errors: {},
+                tickerData: action.payload
+            }
+        case SET_TICKER_ERROR:
             return {
                 ...state,
                 loading: false, 
