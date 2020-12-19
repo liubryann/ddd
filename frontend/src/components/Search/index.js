@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from "react-redux";
-
+import PropTypes from "prop-types";
 import { makeStyles, fade } from '@material-ui/core/styles';
 import { MenuItem, TextField } from "@material-ui/core";
 import Button from '@material-ui/core/Button';
@@ -30,31 +30,31 @@ const useStyles = makeStyles((theme) => ({
 
 const ranges = [
     {
-        value:'day',
-        label: 'Day'
+        value:'1d',
+        label: '1 day'
     },
     {
-        value:'week',
-        label: 'Week'
+        value:'5d',
+        label: '5 days'
     },
     {
-        value:'month',
-        label: 'Month'
+        value:'1mo',
+        label: '1 month'
     },
     {
-        value:'year',
-        label: 'Year'
+        value:'1y',
+        label: '1 year'
     },
     {
-        value:'all',
-        label: 'All Time'
+        value:'max',
+        label: 'Max'
     },
 ];
 
 function Search(props) {
     const classes = useStyles();
     const [query, setQuery] = useState({
-        range: 'day',
+        range: '1d',
         symbol: ''
     }); 
     const [error, setError] = useState(false); 
@@ -78,9 +78,11 @@ function Search(props) {
         }
 
         let searchParams = {
-            range: query.range,
-            symbol: query.symbol
+            symbol: query.symbol,
+            date: query.range,
         }
+
+        JSON.stringify(searchParams)
 
         await props.getAnalysis(searchParams);
     }
@@ -118,7 +120,14 @@ function Search(props) {
                     size="small"
                     error={error ? true : false}
                     />
-                <Button className={classes.button} type="submit" variant="contained" color="secondary" disabled={loading}>
+                <Button 
+                    className={classes.button} 
+                    type="submit" 
+                    variant="contained" 
+                    color="secondary" 
+                    disableElevation 
+                    disabled={loading}
+                >
                     Analyze
                     {loading && (
                         <CircularProgress size={30} className={classes.progress} />
@@ -127,6 +136,11 @@ function Search(props) {
             </div>
         </form>
     )
+}
+
+Search.propTypes = {
+    stock: PropTypes.object.isRequired,
+    getAnalysis: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
