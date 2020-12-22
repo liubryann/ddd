@@ -53,6 +53,7 @@ function Home(props) {
     const { tickerData } = props.stock || {}
     const { data } = tickerData || {}
     const { info } = tickerData || {}
+    const { key } = tickerData || {}
     const classes = useStyles();
 
     return (
@@ -62,7 +63,7 @@ function Home(props) {
                     <Paper className={classes.paper} elevation={0}>xs=4</Paper>
                 </div>
                 <div className={classes.graph}>
-                    {data ? <Graph data={data} title={info} /> : <Paper elevation={0} className={classes.paper}>xs=6</Paper> }
+                    {data ? <Graph key={key} data={data} info={info} /> : <Paper elevation={0} className={classes.paper}>xs=6</Paper> }
                 </div>
             </div>
             <div className={classes.row}>
