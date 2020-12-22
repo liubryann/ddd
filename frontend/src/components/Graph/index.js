@@ -1,8 +1,10 @@
 import React from 'react'
-import PropTypes from "prop-types";
+import PropTypes, { instanceOf } from "prop-types";
 import { connect } from "react-redux";
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+
 import { scaleTime } from 'd3-scale';
 
 import {
@@ -11,21 +13,27 @@ import {
     ValueAxis,
     LineSeries,
     Title,
+    Tooltip,
     Legend,
   } from '@devexpress/dx-react-chart-material-ui';
-import { ArgumentScale } from '@devexpress/dx-react-chart';
+import { ArgumentScale, Animation, EventTracker } from '@devexpress/dx-react-chart';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
         padding: theme.spacing(2),
         height: '90%',
       },
+      titleText: {
+        // add styling to title 
+      },
 }));
 
-const format = () => tick => new Date(tick);
-
-function Graph({data, title}) {
+function Graph({data, info}) {
     const classes = useStyles();
+
+    const TextComponent = ({ ...restProps }) => (
+        <Title.Text {...restProps} className={classes.titleText} />
+      );
 
     return (
         <Paper className={classes.paper} elevation={0} >
@@ -33,23 +41,19 @@ function Graph({data, title}) {
                 data={data}
                 height="300"
             >
-                {/* <ArgumentScale factory={scaleTime}/> */}
-                <ArgumentAxis tickFormat={format} />
+                <ArgumentScale factory={scaleTime}/>
+                <ArgumentAxis />
                 <ValueAxis />
-                <LineSeries valueField="Close" argumentField={data[0].Date ? "Date" : "Datetime"}/>
+                <LineSeries valueField="Close" argumentField={"Date"} color={info.color}/>
 
                 <Title 
-                    text={title}
-
+                    text={"Price Chart"}
+                    textComponent={TextComponent}
                 />
+                <EventTracker />
+                <Tooltip />
+                <Animation />
             </Chart>
-            {/* {chartData !== null ? ( <Chart>
-                data={chartData}
-                <LineSeries
-                    valueField="Close"
-                    arguement="Datetime"
-                    />
-            </Chart>) : <div>Hello</div>} */}
            
         </Paper>
     )

@@ -21,12 +21,17 @@ export const getAnalysis = (query) => (dispatch) => {
 
     api.get('/getTickerData', { params: query})
         .then((res) => {
+            res.data.data.forEach((tick) => {
+                tick.Date = new Date(tick.Date)
+            })
+
             dispatch({
                 type: SET_TICKER_DATA,
                 payload: res.data
             })
         })
         .catch((err) => {
+            console.log(err)
             dispatch({
                 type: SET_TICKER_ERROR,
                 payload: err.response.data
