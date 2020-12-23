@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { makeStyles, fade } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { MenuItem, TextField } from "@material-ui/core";
 import Button from '@material-ui/core/Button';
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -86,6 +86,17 @@ function Search(props) {
 
         await props.getAnalysis(searchParams);
     }
+
+    useEffect(async () => {
+        let searchParams = {
+            symbol: 'TSLA',
+            date: '1d'
+        }
+
+        JSON.stringify(searchParams)
+
+        await props.getAnalysis(searchParams);
+    }, [])
 
     return (
         <form onSubmit={handleSubmit} noValidate autoComplete="off">
