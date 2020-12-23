@@ -4,3 +4,4 @@ backend/dump.json
 backend/__pycache__/
 backend/webscraper/__pycache__/
 backend/redis/__pycache__/
+backend/__pycache__/server.cpython-37.pyc

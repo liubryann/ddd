@@ -1,13 +1,9 @@
-import flask
-from flask import request, jsonify
+from flask import Flask, request, jsonify
 import yfinance as yf 
 from flask_cors import CORS, cross_origin
-import pandas as pd
-import json
-from datetime import timezone
 import random
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config["DEBUG"] = True
@@ -107,5 +103,5 @@ def getTickerData():
     jsonify(return_data)
     return return_data
 
-
-app.run()
+if __name__ == '__main__':
+    app.run(threaded=True, port=5000)

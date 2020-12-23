@@ -1,2 +1,2 @@
-export FLASK_APP=server.py
-flask run
+# export FLASK_APP=server.py
+gunicorn server:app
