@@ -1,3 +1,4 @@
 .vscode/*
 demo.mov
 backend/dump.json
+backend/__pycache__/server.cpython-37.pyc
