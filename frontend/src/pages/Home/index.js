@@ -9,6 +9,7 @@ import Paper from '@material-ui/core/Paper';
 // Components
 import Stock from '../../components/Stock';
 import Graph from '../../components/Graph';
+import StockInfo from '../../components/StockInfo';
 
 const useStyles = makeStyles((theme) => ({
     background: {
@@ -35,14 +36,19 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'row'
     },
     info: {
-        flexGrow: 0.35,
+        flexGrow: 0.1,
+        minWidth: '340px', 
+        flexShrink: 0.35,
         margin: theme.spacing(1.5)
     },
     graph: {
-        flexGrow: 0.65,
+        minWidth: '600px',
+        flexGrow: 0.9,
+        flexShrink: 0.65,
         margin: theme.spacing(1.5)
     },
     sentiment: {
+        minWidth: '470px',
         flexGrow: 0.5,
         margin: theme.spacing(1.5)
     }
@@ -60,16 +66,16 @@ function Home(props) {
         <div className={classes.background}>
             <div className={classes.row}>
                 <div className={classes.info}>
-                    <Paper className={classes.paper} elevation={0}>xs=4</Paper>
+                {data ? <StockInfo key={key} info={info} /> : <Paper elevation={0} className={classes.paper}></Paper> }
                 </div>
                 <div className={classes.graph}>
-                    {data ? <Graph key={key} data={data} info={info} /> : <Paper elevation={0} className={classes.paper}>xs=6</Paper> }
+                    {data ? <Graph key={key} data={data} info={info} /> : <Paper elevation={0} className={classes.paper}></Paper> }
                 </div>
             </div>
             <div className={classes.row}>
                 <div className={classes.sentiment}>
                     <Paper className={classes.paper} elevation={0}>
-                        {/* <Stock /> */}
+                        {/* <Stock /> */}xs=6
                     </Paper>
                 </div>
                 <div className={classes.sentiment}>

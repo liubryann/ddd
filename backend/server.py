@@ -53,6 +53,7 @@ def getTickerData():
     info = {}
     info["shortName"] = company.info["shortName"] 
     info["currency"] = company.info["currency"]
+    info["symbol"] = company.info["symbol"]
 
     data = company.history(period=date, interval=dataInterval)
     # print(data)
@@ -74,15 +75,31 @@ def getTickerData():
     percentChange = round((curr - prevClose) / prevClose * 100, 2)
     firstClose = data[0]["Close"]
 
-    if curr - firstClose >= 0: 
-        color = "green"
-    else: 
-        color = "red"
+    # color of the graph 
+    if curr - firstClose > 0:
+        color = '#43a047'
+    elif curr - firstClose < 0: 
+        color = '#d50000'
+    else:
+        color = '#757575'
+
+    # color of the percent change 
+    if difference > 0:
+        percentChangeColor = '#43a047'
+        difference = "+" + str(difference)
+        percentChange = "+" + str(percentChange)
+    elif difference < 0:
+        percentChangeColor = '#d50000'
+    else:
+        percentChangeColor = '#757575'
+
     
     info["color"] = color
+    info["percentChangeColor"] = percentChangeColor
     info["difference"] = difference
     info["percentChange"] = percentChange
-  
+    info["curr"] = curr 
+
     return_data = {}
     return_data["data"] = data
     return_data["info"] = info

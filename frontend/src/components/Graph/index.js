@@ -1,9 +1,7 @@
 import React from 'react'
-import PropTypes, { instanceOf } from "prop-types";
-import { connect } from "react-redux";
+
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
 
 import { scaleTime } from 'd3-scale';
 
@@ -14,7 +12,6 @@ import {
     LineSeries,
     Title,
     Tooltip,
-    Legend,
   } from '@devexpress/dx-react-chart-material-ui';
 import { ArgumentScale, Animation, EventTracker } from '@devexpress/dx-react-chart';
 
@@ -24,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
         height: '90%',
       },
       titleText: {
-        // add styling to title 
+       fontSize: "1.5em"
       },
 }));
 
@@ -58,16 +55,5 @@ function Graph({data, info}) {
         </Paper>
     )
 }
-
-Graph.propTypes = {
-
- };
  
- const mapStateToProps = (state) => ({
-
- });
- 
- const mapDispatchToProps = {
- }
- 
- export default connect(mapStateToProps, mapDispatchToProps)(Graph);
+ export default Graph;
