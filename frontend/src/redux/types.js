@@ -1,3 +1,5 @@
 export const ANALYSIS_START = 'ANALYSIS_START';
 export const SET_ANALYSIS = 'SET_ANALYSIS'; 
 export const ANALYSIS_ERROR = 'ANALYSIS_ERROR';
+export const SET_TICKER_DATA = 'SET_TICKER_DATA';
+export const SET_TICKER_ERROR = 'SET_TICKER_ERROR';

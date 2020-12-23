@@ -17,8 +17,8 @@ const styles = (theme) => ({
         marginRight: theme.spacing(3)
     },
     paper: {
-        height: '70vh',
-        width: '60%',
+        // height: '70vh',
+        // width: '60%',
         paddingTop: theme.spacing(3),
         paddingBottom: theme.spacing(3),
         paddingLeft: theme.spacing(6),
@@ -135,8 +135,7 @@ class Stock extends Component {
 }
 
 Stock.propTypes = {
-   stock: PropTypes.object.isRequired, 
-   getAnalysis: PropTypes.func.isRequired
+   stock: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
