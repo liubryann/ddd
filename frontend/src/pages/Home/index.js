@@ -37,20 +37,23 @@ const useStyles = makeStyles((theme) => ({
     },
     info: {
         flexGrow: 0.1,
-        minWidth: '340px', 
-        flexShrink: 0.35,
+        flexBasis: 340,
+        flexShrink: 0,
         margin: theme.spacing(1.5)
     },
     graph: {
-        minWidth: '600px',
         flexGrow: 0.9,
-        flexShrink: 0.65,
+        flexBasis: 600,
+        flexShrink: 0,
         margin: theme.spacing(1.5)
     },
     sentiment: {
         minWidth: '470px',
         flexGrow: 0.5,
         margin: theme.spacing(1.5)
+    },
+    rounded: {
+        borderRadius: '10px'
     }
 
 }));
@@ -66,20 +69,20 @@ function Home(props) {
         <div className={classes.background}>
             <div className={classes.row}>
                 <div className={classes.info}>
-                {data ? <StockInfo key={key} info={info} /> : <Paper elevation={0} className={classes.paper}></Paper> }
+                {data ? <StockInfo key={key} info={info} /> : <Paper classes={{ rounded: classes.rounded }} elevation={0} className={classes.paper}></Paper> }
                 </div>
                 <div className={classes.graph}>
-                    {data ? <Graph key={key} data={data} info={info} /> : <Paper elevation={0} className={classes.paper}></Paper> }
+                    {data ? <Graph key={key} data={data} info={info} /> : <Paper classes={{ rounded: classes.rounded }} elevation={0} className={classes.paper}></Paper> }
                 </div>
             </div>
             <div className={classes.row}>
                 <div className={classes.sentiment}>
-                    <Paper className={classes.paper} elevation={0}>
+                    <Paper classes={{ rounded: classes.rounded }} className={classes.paper} elevation={0}>
                         {/* <Stock /> */}xs=6
                     </Paper>
                 </div>
                 <div className={classes.sentiment}>
-                    <Paper className={classes.paper} elevation={0}>xs=6</Paper>
+                    <Paper classes={{ rounded: classes.rounded }} className={classes.paper} elevation={0}>xs=6</Paper>
                 </div>
             </div>
         </div>
