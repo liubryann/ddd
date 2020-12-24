@@ -18,6 +18,9 @@ const useStyles = info => makeStyles((theme) => ({
     },
     spacing: {
         marginRight: theme.spacing(1)
+    },
+    rounded: {
+        borderRadius: '10px'
     }
     
 }));
@@ -26,7 +29,7 @@ function StockInfo({info}) {
     const classes = useStyles(info)();
 
     return (
-        <Paper className={classes.paper} elevation={0}>
+        <Paper classes={{ rounded: classes.rounded }} className={classes.paper} elevation={0}>
             <Typography variant="h6">{info.shortName + " (" + info.symbol + ")"}</Typography>
             <div className={classes.price}>
                 <Typography variant="h4" className={classes.spacing}>{info.curr}</Typography>
