@@ -19,10 +19,13 @@ const useStyles = makeStyles((theme) => ({
     paper: {
         padding: theme.spacing(2),
         height: '90%',
-      },
-      titleText: {
+    },
+    titleText: {
        fontSize: "1.5em"
-      },
+    },
+    rounded: {
+        borderRadius: '10px'
+    }
 }));
 
 function Graph({data, info}) {
@@ -33,7 +36,7 @@ function Graph({data, info}) {
       );
 
     return (
-        <Paper className={classes.paper} elevation={0} >
+        <Paper classes={{ rounded: classes.rounded }} className={classes.paper} elevation={0} >
             <Chart
                 data={data}
                 height="300"

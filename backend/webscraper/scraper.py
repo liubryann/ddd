@@ -92,6 +92,7 @@ class Scraper:
         )
         return self.newsAPIFormatter(result) if result != None else None
 
+
     def getDates(self, time_range, format_dates=False):
         # defaults to 1 month
         end_date = date.today()
@@ -172,7 +173,6 @@ def scrape(query, time_filter):
     else:
         institutional = scraper.scrapeNewsAPI()
     return individual, institutional
-
 
 if __name__ == "__main__":
     parser = ArgumentParser(
