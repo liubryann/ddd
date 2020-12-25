@@ -1,5 +1,5 @@
 import praw, re, pyjq, json, os, requests
-from datetime import date
+from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 from argparse import ArgumentParser
 from dotenv import load_dotenv
@@ -13,35 +13,21 @@ USER_AGENT = os.getenv("USER_AGENT")
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 NYT_KEY = os.getenv("NYT_KEY")
 
-TIME_MAP = {"1d": "day", "1mo": "month", "5d": "week", "1yr": "year", "max": "all"}
+TIME_MAP = {"1d": "day", "1mo": "month", "5d": "week", "1y": "year", "max": "all"}
 
 
 class Scraper:
-    def __init__(self, client_id, client_secret, user_agent):
+    def __init__(self, client_id, client_secret, user_agent, query, time_filter="1mo"):
         self.reddit = praw.Reddit(
             client_id=client_id,
             client_secret=client_secret,
             user_agent=user_agent,
         )
+        self.query = query
+        self.time_filter = time_filter
         self.newsapi = NewsApiClient(api_key=NEWS_API_KEY)
 
-    def postFormatter(self, posts, retPosts):
-        for post in posts:
-            if len(post.selftext) >= 100:
-                retPost = {}
-                retPost["title"] = self.clean(post.title)
-                retPost["url"] = post.url
-                regex = re.compile("\[.*?\]\(.*?\)")
-                retPost["data"] = re.sub(regex, "", self.clean(post.selftext).strip())
-                if len(retPost["data"]) > 400:
-                    retPost["data"] = retPost["data"][:401].strip() + "..."
-                retPosts.append(retPost)
-
-    def scrapeReddit(
-        self,
-        query,
-        time_filter="1mo",
-    ):
+    def scrapeReddit(self):
         subreddits = [
             "investing",
             "stocks",
@@ -52,30 +38,60 @@ class Scraper:
         result = []
         with cf.ThreadPoolExecutor(1000) as executor:
             [
-                executor.submit(
-                    self.scrapeSubreddit, query, result, subreddit, 15, time_filter
-                )
+                executor.submit(self.scrapeSubreddit, result, subreddit, 15)
                 for subreddit in subreddits
             ]
         return result
 
     def scrapeSubreddit(
         self,
-        query,
         data,
-        subreddit="investing",
+        subreddit,
         limit=10,
-        time_filter="1mo",
     ):
         try:
-            time_filter = TIME_MAP[time_filter]
+            timeframe = TIME_MAP[self.time_filter]
         except:
-            time_filter = "month"
+            timeframe = "month"
         result = self.reddit.subreddit(subreddit).search(
-            query, sort="relevance", time_filter=time_filter
+            self.query, sort="relevance", time_filter=timeframe
         )
         result.limit = limit
         self.postFormatter(result, data)
+
+    def scrapeNYT(self):
+        begin_date, end_date = self.getDates(self.time_filter, True)
+        requestUrl = (
+            "https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date="
+            + begin_date
+            + "&end_date="
+            + end_date
+            + "&q="
+            + self.query
+            + "&sort=relevance&api-key="
+            + NYT_KEY
+        )
+        requestHeaders = {"Accept": "application/json"}
+        parsed = requests.get(requestUrl, headers=requestHeaders).json()
+        obj = pyjq.all(
+            '.response.docs[] | {"title": .headline.print_headline, "data": (.headline.main + ". " + .abstract + " " + .lead_paragraph), "url": .web_url} ',
+            parsed,
+        )
+        obj = json.loads(self.clean(json.dumps(obj)))
+        return obj
+
+    def scrapeNewsAPI(self):
+        begin_date, end_date = self.getDates(self.time_filter)
+        begin_date = begin_date + relativedelta(days=+1)
+        result = self.newsapi.get_everything(
+            q=self.query,
+            sources="bbc-news,bloomberg,cbc-news,financial-post,fortune",
+            from_param=begin_date,
+            to=end_date,
+            language="en",
+        )
+        return self.newsAPIFormatter(result) if result != None else None
+
 
     def getDates(self, time_range, format_dates=False):
         # defaults to 1 month
@@ -84,7 +100,7 @@ class Scraper:
             begin_date = end_date
         elif time_range == "5d":
             begin_date = end_date + relativedelta(days=-7)
-        elif time_range == "1yr":
+        elif time_range == "1y":
             begin_date = end_date + relativedelta(years=-1)
         elif time_range == "max":
             begin_date = end_date + relativedelta(years=-10)
@@ -94,40 +110,6 @@ class Scraper:
             end_date = str(end_date).replace("-", "")
             begin_date = str(begin_date).replace("-", "")
         return begin_date, end_date
-
-    def scrapeNYT(self, query, time_filter="1mo"):
-        begin_date, end_date = self.getDates(time_filter, True)
-        requestUrl = (
-            "https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date="
-            + begin_date
-            + "&end_date="
-            + end_date
-            + "&q="
-            + query
-            + "&sort=relevance&api-key="
-            + NYT_KEY
-        )
-        requestHeaders = {"Accept": "application/json"}
-        parsed = requests.get(requestUrl, headers=requestHeaders).json()
-        # with open("test1.json", "w") as f1:
-        obj = pyjq.all(
-            '.response.docs[] | {"title": .headline.print_headline, "data": (.headline.main + ". " + .abstract + " " + .lead_paragraph), "url": .web_url} ',
-            parsed,
-        )
-        obj = json.loads(re.sub(r"[^\x00-\x7F]+", " ", json.dumps(obj)))
-        return obj
-
-    def scrapeNewsAPI(self, query, time_filter="1mo"):
-        begin_date, end_date = self.getDates(time_filter)
-        result = self.newsapi.get_everything(
-            q=query,
-            # sources="fortune,bloomberg,business-insider",
-            sources="bbc-news,bloomberg,cbc-news,financial-post,fortune",
-            from_param=begin_date,
-            to=end_date,
-            language="en",
-        )
-        return self.newsAPIFormatter(result) if result != None else None
 
     def clean(self, text):
         regex = re.compile("<.*?>")
@@ -147,21 +129,50 @@ class Scraper:
                     retPost["data"] = self.clean(post["description"])
                 regex = re.compile("\[.*?\]")
                 retPost["data"] = re.sub(regex, "...", retPost["data"]).strip()
+                published_date = datetime.strptime(
+                    post["publishedAt"], "%Y-%m-%dT%H:%M:%SZ"
+                )
+                retPost["time"] = self.pretty_time(published_date)
                 retPosts.append(retPost)
             except:
                 continue
 
         return retPosts
 
-def main(query, timeframe):
-    scraper = Scraper(CLIENT_ID, CLIENT_SECRET, USER_AGENT)
-    ret = {
-        "people": scraper.scrapeReddit(query, time_filter=timeframe),
-        "corporation": scraper.scrapeNewsAPI(query, time_filter=timeframe),
-    }
-    with open("dump.json", "w") as f:
-        f.write(json.dumps(ret))
+    def postFormatter(self, posts, retPosts):
+        for post in posts:
+            if len(post.selftext) >= 100:
+                retPost = {}
+                retPost["title"] = self.clean(post.title)
+                retPost["url"] = post.url
+                regex = re.compile("\[.*?\]\(.*?\)")
+                retPost["data"] = re.sub(regex, "", self.clean(post.selftext).strip())
+                retPost["time"] = datetime.fromtimestamp(post.created_utc)
+                retPost["time"] = self.pretty_time(retPost["time"])
+                if len(retPost["data"]) > 400:
+                    retPost["data"] = retPost["data"][:401].strip() + "..."
+                retPosts.append(retPost)
 
+    def pretty_time(self, start_date):
+        rd = relativedelta(datetime.now(), start_date)
+        relative_string = ""
+        for period in ["years", "months", "days", "hours", "minutes"]:
+            time_attr = getattr(rd, period)
+            relative_string += f"{time_attr} { period }, " if time_attr > 0 else ""
+            if relative_string != "":
+                break
+
+        return relative_string[:-2] + " ago" if relative_string != "" else "just now"
+
+
+def scrape(query, time_filter):
+    scraper = Scraper(CLIENT_ID, CLIENT_SECRET, USER_AGENT, query, time_filter)
+    individual = scraper.scrapeReddit()
+    if timeframe == "1y" or timeframe == "max":
+        institutional = scraper.scrapeNYT()
+    else:
+        institutional = scraper.scrapeNewsAPI()
+    return individual, institutional
 
 if __name__ == "__main__":
     parser = ArgumentParser(
@@ -178,4 +189,7 @@ if __name__ == "__main__":
     query = args.query
     timeframe = args.timeframe
 
-    main(query, timeframe)
+    ret1, ret2 = scrape(query, timeframe)
+    ret = {"institutional": ret2, "individual": ret1}
+    with open("dump.json", "w") as f:
+        f.write(json.dumps(ret))

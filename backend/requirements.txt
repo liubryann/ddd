@@ -5,6 +5,8 @@ python-dotenv==0.15.0
 scrapy==2.4.1
 pyjq==2.4.0
 python-dateutil==2.8.1
+newsapi-python==0.2.6
+redis==3.5.3
 yfinance==0.1.55
 flask-cors==3.0.9
 gunicorn==20.0.4

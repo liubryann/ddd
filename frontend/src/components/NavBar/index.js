@@ -28,16 +28,16 @@ function NavBar() {
     const classes = useStyles();
 
     return (
-            <AppBar className={classes.bar} elevation={0} >
-                <Toolbar>
-                    <div className={classes.title}>
-                        <img src={logo} className={classes.logo} />
-                    </div>
-                        <Typography color="error" variant="body1">Warning: under active development</Typography>
-                    <Search />
+        <AppBar className={classes.bar} elevation={0} >
+            <Toolbar>
+                <div className={classes.title}>
+                    <img src={logo} className={classes.logo} />
+                </div>
+                <Typography color="error" variant="body1">Warning: under active development</Typography>
+                <Search />
 
-                </Toolbar>
-            </AppBar> 
+            </Toolbar>
+        </AppBar>
     )
 }
 
