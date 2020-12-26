@@ -35,7 +35,7 @@ def analyze(data):
         summary = (
             result["summary"]
             if len(result["summary"]) < 400
-            else f"{result['summary'][:401].strip()}..."
+            else " ".join(result["summary"].split(" ")[:81]).strip() + "..."
         )
 
         total_sentiment += sentiment_result["sentiment"]
@@ -55,11 +55,11 @@ def analyze(data):
     with cf.ThreadPoolExecutor(1000) as executor:
         all_futures = [executor.submit(analyze_subprocess, entry) for entry in data]
         for future in cf.as_completed(all_futures):
-            # try:
-            # print(future.result())
-            analyzed_data.append(future.result())
-        # except:
-        # pass
+            try:
+                print(future.result())
+                analyzed_data.append(future.result())
+            except:
+                pass
 
     print(analyzed_data)
     count = len(data)

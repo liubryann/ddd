@@ -1,7 +1,7 @@
 import yfinance as yf
 from backend.webscraper.scraper import scrape
 from backend.process import analyze
-import random, time
+import random
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 
@@ -20,18 +20,11 @@ def get_analysis():
     else:
         return "Error: Request was not properly formatted"
 
-    # lists of dicts
     individual, institutional = scrape(symbol, date)
-    # print(individual, institutional)
 
-    start = time.time()
     individual_result, individual_avg = analyze(individual)
-    end = time.time()
-    print(end - start)
-    # start = time.time()
     institutional_result, institutional_avg = analyze(institutional)
-    # end = time.time()
-    # print(end - start)
+
     response = {
         "individual": individual_result,
         "individualAverage": individual_avg,

@@ -168,8 +168,7 @@ def scrape(query, time_filter):
     if time_filter == "1y" or time_filter == "max":
         institutional = scraper.scrapeNYT()
     else:
-        institutional = []
-        # institutional = scraper.scrapeNewsAPI()
+        institutional = scraper.scrapeNewsAPI()
     return individual, institutional
 
 
