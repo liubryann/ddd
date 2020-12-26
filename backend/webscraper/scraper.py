@@ -92,7 +92,6 @@ class Scraper:
         )
         return self.newsAPIFormatter(result) if result != None else None
 
-
     def getDates(self, time_range, format_dates=False):
         # defaults to 1 month
         end_date = date.today()
@@ -149,8 +148,8 @@ class Scraper:
                 retPost["data"] = re.sub(regex, "", self.clean(post.selftext).strip())
                 retPost["time"] = datetime.fromtimestamp(post.created_utc)
                 retPost["time"] = self.pretty_time(retPost["time"])
-                if len(retPost["data"]) > 400:
-                    retPost["data"] = retPost["data"][:401].strip() + "..."
+                # if len(retPost["data"]) > 400:
+                # retPost["data"] = retPost["data"][:401].strip() + "..."
                 retPosts.append(retPost)
 
     def pretty_time(self, start_date):
@@ -168,11 +167,13 @@ class Scraper:
 def scrape(query, time_filter):
     scraper = Scraper(CLIENT_ID, CLIENT_SECRET, USER_AGENT, query, time_filter)
     individual = scraper.scrapeReddit()
-    if timeframe == "1y" or timeframe == "max":
+    if time_filter == "1y" or time_filter == "max":
         institutional = scraper.scrapeNYT()
     else:
-        institutional = scraper.scrapeNewsAPI()
+        institutional = []
+        # institutional = scraper.scrapeNewsAPI()
     return individual, institutional
+
 
 if __name__ == "__main__":
     parser = ArgumentParser(
