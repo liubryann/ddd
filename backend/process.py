@@ -1,15 +1,7 @@
 from backend.nlp.nlp import process
 from argparse import ArgumentParser
-from dotenv import load_dotenv
-import json, os
-from concurrent.futures import ThreadPoolExecutor
-
-load_dotenv()
-
-CLIENT_ID = os.getenv("CLIENT_ID")
-CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-USER_AGENT = os.getenv("USER_AGENT")
-NYT_KEY = os.getenv("NYT_KEY")
+import json
+import concurrent.futures as cf
 
 
 def feeling(num, mag):
@@ -34,37 +26,48 @@ def feeling(num, mag):
 def analyze(data):
     total_sentiment = 0
     total_magnitude = 0
-    analyzed_data = []
-    for entry in data:
-        # if len(entry["data"].split(".")) > 1:
-        result = json.loads(process(entry["data"]))["sentiment_details"]
-        total_sentiment += result["sentiment"]
-        total_magnitude += result["magnitude"]
-        analyzed_data.append(
-            {
-                "title": entry["title"],
-                # "summary": entry["data"],
-                "summary": result["summary"],
-                "sentiment": feeling(
-                    result["sentiment"],
-                    result["magnitude"],
-                ),
-                "time": entry["time"],
-                "link": entry["url"],
-            }
+
+    def analyze_subprocess(entry):
+        nonlocal total_magnitude
+        nonlocal total_sentiment
+        result = json.loads(process(entry["data"]))
+        sentiment_result = result["sentiment_details"]
+        summary = (
+            result["summary"]
+            if len(result["summary"]) < 400
+            else f"{result['summary'][:401].strip()}..."
         )
+
+        total_sentiment += sentiment_result["sentiment"]
+        total_magnitude += sentiment_result["magnitude"]
+        return {
+            "title": entry["title"],
+            "summary": summary,
+            "sentiment": feeling(
+                sentiment_result["sentiment"],
+                sentiment_result["magnitude"],
+            ),
+            "time": entry["time"],
+            "link": entry["url"],
+        }
+
+    analyzed_data = []
+    with cf.ThreadPoolExecutor(1000) as executor:
+        all_futures = [executor.submit(analyze_subprocess, entry) for entry in data]
+        for future in cf.as_completed(all_futures):
+            # try:
+            # print(future.result())
+            analyzed_data.append(future.result())
+        # except:
+        # pass
+
+    print(analyzed_data)
     count = len(data)
     avg_sentiment = 0
     if count != 0:
-        print(total_sentiment)
-        print(total_magnitude)
-        print(count)
         avg_sentiment = feeling(total_sentiment / count, total_magnitude / count)
 
     return analyzed_data, avg_sentiment
-
-def analyze_subprocess():
-
 
 
 if __name__ == "__main__":

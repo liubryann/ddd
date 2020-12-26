@@ -148,8 +148,6 @@ class Scraper:
                 retPost["data"] = re.sub(regex, "", self.clean(post.selftext).strip())
                 retPost["time"] = datetime.fromtimestamp(post.created_utc)
                 retPost["time"] = self.pretty_time(retPost["time"])
-                # if len(retPost["data"]) > 400:
-                # retPost["data"] = retPost["data"][:401].strip() + "..."
                 retPosts.append(retPost)
 
     def pretty_time(self, start_date):

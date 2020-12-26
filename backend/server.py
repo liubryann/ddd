@@ -22,15 +22,16 @@ def get_analysis():
 
     # lists of dicts
     individual, institutional = scrape(symbol, date)
+    # print(individual, institutional)
 
     start = time.time()
     individual_result, individual_avg = analyze(individual)
     end = time.time()
     print(end - start)
-    start = time.time()
+    # start = time.time()
     institutional_result, institutional_avg = analyze(institutional)
-    end = time.time()
-    print(end - start)
+    # end = time.time()
+    # print(end - start)
     response = {
         "individual": individual_result,
         "individualAverage": individual_avg,
