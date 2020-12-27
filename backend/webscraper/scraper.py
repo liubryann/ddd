@@ -74,9 +74,12 @@ class Scraper:
         requestHeaders = {"Accept": "application/json"}
         parsed = requests.get(requestUrl, headers=requestHeaders).json()
         obj = pyjq.all(
-            '.response.docs[] | {"title": .headline.print_headline, "data": (.headline.main + ". " + .abstract + " " + .lead_paragraph), "url": .web_url} ',
+            '.response.docs[] | {"title": .headline.main, "data": (.abstract + " " + .lead_paragraph), "url": .web_url, "time": .pub_date} ',
             parsed,
         )
+        for entry in obj:
+            published_date = datetime.strptime(entry["time"], "%Y-%m-%dT%H:%M:%S+0000")
+            entry["time"] = self.pretty_time(published_date)
         obj = json.loads(self.clean(json.dumps(obj)))
         return obj
 

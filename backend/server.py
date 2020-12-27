@@ -22,13 +22,13 @@ def get_analysis():
 
     individual, institutional = scrape(symbol, date)
 
-    individual_result, individual_avg = analyze(individual)
-    institutional_result, institutional_avg = analyze(institutional)
+    individual_avg = analyze(individual)
+    institutional_avg = analyze(institutional)
 
     response = {
-        "individual": individual_result,
+        "individual": individual,
         "individualAverage": individual_avg,
-        "institutional": institutional_result,
+        "institutional": institutional,
         "institutionalAverage": institutional_avg,
     }
 

@@ -32,6 +32,9 @@ def analyze(data):
     total_magnitude = 0
 
     def analyze_subprocess(entry):
+        """
+        modifies a dictionary inplace*
+        """
         nonlocal total_magnitude
         nonlocal total_sentiment
         result = json.loads(process(entry["data"]))
@@ -49,32 +52,28 @@ def analyze(data):
 
         total_sentiment += sentiment_result["sentiment"]
         total_magnitude += sentiment_result["magnitude"]
-        return {
-            "title": entry["title"],
-            "summary": summary,
-            "sentiment": feeling(
-                sentiment_result["sentiment"],
-                sentiment_result["magnitude"],
-            ),
-            "time": entry["time"],
-            "link": entry["url"],
-        }
+        entry.update(
+            {
+                "summary": summary,
+                "sentiment": feeling(
+                    sentiment_result["sentiment"],
+                    sentiment_result["magnitude"],
+                ),
+            }
+        )
+        entry["link"] = entry.pop("url")
+        entry.pop("data")
 
-    analyzed_data = []
     with cf.ThreadPoolExecutor(1000) as executor:
-        all_futures = [executor.submit(analyze_subprocess, entry) for entry in data]
-        for future in cf.as_completed(all_futures):
-            try:
-                analyzed_data.append(future.result())
-            except:
-                pass
+        for index in range(len(data)):
+            executor.submit(analyze_subprocess, data[index])
 
     count = len(data)
     avg_sentiment = 0
     if count != 0:
         avg_sentiment = feeling(total_sentiment / count, total_magnitude / count)
 
-    return analyzed_data, avg_sentiment
+    return avg_sentiment
 
 
 if __name__ == "__main__":
