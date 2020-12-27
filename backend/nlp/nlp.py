@@ -3,6 +3,7 @@ from gensim.summarization.summarizer import summarize
 from gensim.summarization import keywords
 from argparse import ArgumentParser
 import json
+
 # pip install --upgrade google-cloud-language
 # pip install --upgrade gensim
 
@@ -22,15 +23,13 @@ def analyze_sentiment(text_content):
     client = language_v1.LanguageServiceClient()
     document["content"] = text_content
     response = client.analyze_sentiment(
-        request={'document': document, 'encoding_type': encoding_type})
-
-    print("Document sentiment score: {}".format(
-        response.document_sentiment.score))
-    print(
-        "Document sentiment magnitude: {}".format(
-            response.document_sentiment.magnitude
-        )
+        request={"document": document, "encoding_type": encoding_type}
     )
+
+    # print("Document sentiment score: {}".format(response.document_sentiment.score))
+    # print(
+    # "Document sentiment magnitude: {}".format(response.document_sentiment.magnitude)
+    # )
     output["sentiment"] = response.document_sentiment.score
     output["magnitude"] = response.document_sentiment.magnitude
     return output
@@ -46,14 +45,11 @@ def classify_text(text_content):
 
     client = language_v1.LanguageServiceClient()
     document["content"] = text_content
-    response = client.classify_text(request={'document': document})
-    output = {
-        "Category name": "{}",
-        "Confidence": "{}"
-    }
+    response = client.classify_text(request={"document": document})
+    output = {"Category name": "{}", "Confidence": "{}"}
     for category in response.categories:
-        print("Category name: {}".format(category.name))
-        print("Confidence: {}".format(category.confidence))
+        # print("Category name: {}".format(category.name))
+        # print("Confidence: {}".format(category.confidence))
         output["Category name"] = output["Category name"].format(category.name)
         output["Confidence"] = output["Confidence"].format(category.name)
     return output
@@ -71,25 +67,27 @@ def summarize_text(text_content, word_count=20):
         summ_words = summarize(text_content, word_count=word_count)
     except:
         summ_words = text_content
-    
-    print("Word count summary")
-    print(summ_words)
+
+    # print("Word count summary")
+    # print(summ_words)
     return summ_words
 
 
 def process(text_content):
-    '''
+    """
     Process text into a dictionary
 
     Args:
       text_content The text content to process.
-    '''
-    
-    return json.dumps({
-        "summary": summarize_text(text_content, 20),
-        "sector": classify_text(text_content),
-        "sentiment_details": analyze_sentiment(text_content)
-    })
+    """
+
+    return json.dumps(
+        {
+            "summary": summarize_text(text_content, 20),
+            "sector": classify_text(text_content),
+            "sentiment_details": analyze_sentiment(text_content),
+        }
+    )
 
 
 if __name__ == "__main__":
@@ -97,21 +95,18 @@ if __name__ == "__main__":
         "sentiment": analyze_sentiment,
         "classify": classify_text,
         "summarize": summarize_text,
-        "process": process
+        "process": process,
     }
     parser = ArgumentParser(description="Process raw text")
-    parser.add_argument('option',
-                        type=str,
-                        choices=options.keys(),
-                        help="Action to perform on text")
-    parser.add_argument('text',
-                        type=str,
-                        help="Raw input text")
+    parser.add_argument(
+        "option", type=str, choices=options.keys(), help="Action to perform on text"
+    )
+    parser.add_argument("text", type=str, help="Raw input text")
 
     args = parser.parse_args()
     index = args.option
     action = options[index]
     text_content = args.text
-    
+
     with open("dump.json", "w") as f:
         f.write(json.dumps(action(text_content)))

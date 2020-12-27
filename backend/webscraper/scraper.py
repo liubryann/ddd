@@ -1,4 +1,4 @@
-import praw, re, pyjq, json, os, requests
+import praw, re, pyjq, json, os, requests, redditcleaner, unidecode
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 from argparse import ArgumentParser
@@ -74,9 +74,12 @@ class Scraper:
         requestHeaders = {"Accept": "application/json"}
         parsed = requests.get(requestUrl, headers=requestHeaders).json()
         obj = pyjq.all(
-            '.response.docs[] | {"title": .headline.print_headline, "data": (.headline.main + ". " + .abstract + " " + .lead_paragraph), "url": .web_url} ',
+            '.response.docs[] | {"title": .headline.main, "data": (.abstract + " " + .lead_paragraph), "url": .web_url, "time": .pub_date} ',
             parsed,
         )
+        for entry in obj:
+            published_date = datetime.strptime(entry["time"], "%Y-%m-%dT%H:%M:%S+0000")
+            entry["time"] = self.pretty_time(published_date)
         obj = json.loads(self.clean(json.dumps(obj)))
         return obj
 
@@ -91,7 +94,6 @@ class Scraper:
             language="en",
         )
         return self.newsAPIFormatter(result) if result != None else None
-
 
     def getDates(self, time_range, format_dates=False):
         # defaults to 1 month
@@ -114,7 +116,7 @@ class Scraper:
     def clean(self, text):
         regex = re.compile("<.*?>")
         text = re.sub(regex, " ", text)
-        return re.sub(r"[^\x00-\x7F]+", " ", text.replace("\n", "").replace("\r", ""))
+        return unidecode.unidecode(text.replace("\r\n", " ").replace("\n", " ")).strip()
 
     def newsAPIFormatter(self, posts):
         retPosts = []
@@ -128,7 +130,7 @@ class Scraper:
                 else:
                     retPost["data"] = self.clean(post["description"])
                 regex = re.compile("\[.*?\]")
-                retPost["data"] = re.sub(regex, "...", retPost["data"]).strip()
+                retPost["data"] = re.sub(regex, "", retPost["data"]).strip()
                 published_date = datetime.strptime(
                     post["publishedAt"], "%Y-%m-%dT%H:%M:%SZ"
                 )
@@ -145,12 +147,13 @@ class Scraper:
                 retPost = {}
                 retPost["title"] = self.clean(post.title)
                 retPost["url"] = post.url
-                regex = re.compile("\[.*?\]\(.*?\)")
-                retPost["data"] = re.sub(regex, "", self.clean(post.selftext).strip())
+                retPost["data"] = (
+                    self.clean(redditcleaner.clean(post.selftext))
+                    .replace("&x200B;", "")
+                    .strip()
+                )
                 retPost["time"] = datetime.fromtimestamp(post.created_utc)
                 retPost["time"] = self.pretty_time(retPost["time"])
-                if len(retPost["data"]) > 400:
-                    retPost["data"] = retPost["data"][:401].strip() + "..."
                 retPosts.append(retPost)
 
     def pretty_time(self, start_date):
@@ -158,7 +161,10 @@ class Scraper:
         relative_string = ""
         for period in ["years", "months", "days", "hours", "minutes"]:
             time_attr = getattr(rd, period)
-            relative_string += f"{time_attr} { period }, " if time_attr > 0 else ""
+            if time_attr > 1:
+                relative_string = f"{time_attr} { period }, "
+            elif time_attr == 1:
+                relative_string = f"{time_attr} { period[:-1] }, "
             if relative_string != "":
                 break
 
@@ -168,11 +174,12 @@ class Scraper:
 def scrape(query, time_filter):
     scraper = Scraper(CLIENT_ID, CLIENT_SECRET, USER_AGENT, query, time_filter)
     individual = scraper.scrapeReddit()
-    if timeframe == "1y" or timeframe == "max":
+    if time_filter == "1y" or time_filter == "max":
         institutional = scraper.scrapeNYT()
     else:
         institutional = scraper.scrapeNewsAPI()
     return individual, institutional
+
 
 if __name__ == "__main__":
     parser = ArgumentParser(
