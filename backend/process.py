@@ -23,6 +23,10 @@ def feeling(num, mag):
     return feeling
 
 
+def truncate_text(text):
+    return " ".join(text.split(" ")[:81]).strip() + "..."
+
+
 def analyze(data):
     total_sentiment = 0
     total_magnitude = 0
@@ -32,11 +36,16 @@ def analyze(data):
         nonlocal total_sentiment
         result = json.loads(process(entry["data"]))
         sentiment_result = result["sentiment_details"]
-        summary = (
-            result["summary"]
-            if len(result["summary"]) < 400
-            else " ".join(result["summary"].split(" ")[:81]).strip() + "..."
-        )
+
+        if result["summary"] == "":
+            summary = truncate_text(entry["data"])
+        else:
+            result["summary"] = result["summary"].replace("\n", " ").strip()
+            summary = (
+                result["summary"]
+                if len(result["summary"]) < 400
+                else truncate_text(result["summary"])
+            )
 
         total_sentiment += sentiment_result["sentiment"]
         total_magnitude += sentiment_result["magnitude"]
@@ -56,12 +65,10 @@ def analyze(data):
         all_futures = [executor.submit(analyze_subprocess, entry) for entry in data]
         for future in cf.as_completed(all_futures):
             try:
-                print(future.result())
                 analyzed_data.append(future.result())
             except:
                 pass
 
-    print(analyzed_data)
     count = len(data)
     avg_sentiment = 0
     if count != 0:

@@ -1,4 +1,4 @@
-import praw, re, pyjq, json, os, requests
+import praw, re, pyjq, json, os, requests, redditcleaner, unidecode
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 from argparse import ArgumentParser
@@ -113,7 +113,7 @@ class Scraper:
     def clean(self, text):
         regex = re.compile("<.*?>")
         text = re.sub(regex, " ", text)
-        return re.sub(r"[^\x00-\x7F]+", " ", text.replace("\n", "").replace("\r", ""))
+        return unidecode.unidecode(text.replace("\r\n", " ").replace("\n", " ")).strip()
 
     def newsAPIFormatter(self, posts):
         retPosts = []
@@ -127,7 +127,7 @@ class Scraper:
                 else:
                     retPost["data"] = self.clean(post["description"])
                 regex = re.compile("\[.*?\]")
-                retPost["data"] = re.sub(regex, "...", retPost["data"]).strip()
+                retPost["data"] = re.sub(regex, "", retPost["data"]).strip()
                 published_date = datetime.strptime(
                     post["publishedAt"], "%Y-%m-%dT%H:%M:%SZ"
                 )
@@ -144,8 +144,11 @@ class Scraper:
                 retPost = {}
                 retPost["title"] = self.clean(post.title)
                 retPost["url"] = post.url
-                regex = re.compile("\[.*?\]\(.*?\)")
-                retPost["data"] = re.sub(regex, "", self.clean(post.selftext).strip())
+                retPost["data"] = (
+                    self.clean(redditcleaner.clean(post.selftext))
+                    .replace("&x200B;", "")
+                    .strip()
+                )
                 retPost["time"] = datetime.fromtimestamp(post.created_utc)
                 retPost["time"] = self.pretty_time(retPost["time"])
                 retPosts.append(retPost)
@@ -155,7 +158,10 @@ class Scraper:
         relative_string = ""
         for period in ["years", "months", "days", "hours", "minutes"]:
             time_attr = getattr(rd, period)
-            relative_string += f"{time_attr} { period }, " if time_attr > 0 else ""
+            if time_attr > 1:
+                relative_string = f"{time_attr} { period }, "
+            elif time_attr == 1:
+                relative_string = f"{time_attr} { period[:-1] }, "
             if relative_string != "":
                 break
 
