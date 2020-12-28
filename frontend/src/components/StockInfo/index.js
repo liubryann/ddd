@@ -17,7 +17,8 @@ const useStyles = info => makeStyles((theme) => ({
         color:  info.percentChangeColor
     },
     spacing: {
-        marginRight: theme.spacing(1)
+        marginRight: theme.spacing(1),
+        fontWeight: 'bold',
     },
     rounded: {
         borderRadius: '10px'

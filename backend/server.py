@@ -20,6 +20,60 @@ def get_analysis():
 
     response = {}
 
+    response["individualAverage"] = "Positive (10)"
+    response["institutionalAverage"] = "Negative (-10)"
+
+    individual = []
+
+    post1 = {}
+    post1["title"] = "Title 1"
+    post1["summary"] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore "
+    post1["sentiment"] = 0
+    post1["time"] = "5 hours ago"
+    post1["link"] = "https://reddit.com/wallstreetbets"
+
+    individual.append(post1)
+
+    post2 = {}
+    post2["title"] = "Title 2"
+    post2["summary"] = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec "
+    post2["sentiment"] = 5
+    post2["time"] = "10 days ago"
+    post2["link"] = "https://reddit.com/stocks"
+
+    individual.append(post2)
+
+    post3 = {}
+    post3["title"] = "Title 3"
+    post3["summary"] = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec "
+    post3["sentiment"] = 4
+    post3["time"] = "10 days ago"
+    post3["link"] = "https://reddit.com/stocks"
+
+    individual.append(post3)
+
+    post4 = {}
+    post4["title"] = "Title 4"
+    post4["summary"] = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu."
+    post4["sentiment"] = 3
+    post4["time"] = "10 days ago"
+    post4["link"] = "https://reddit.com/stocks"
+
+    individual.append(post4)
+
+    post5 = {}
+    post5["title"] = "Title 5"
+    post5["summary"] = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu."
+    post5["sentiment"] = 2
+    post5["time"] = "10 days ago"
+    post5["link"] = "https://reddit.com/stocks"
+
+    individual.append(post5)
+
+
+    response["individual"] = individual 
+    response["institutional"] = individual
+
     # call redis
     # if redis response is not data, call scraper
     # forward scraper response to analyzer
