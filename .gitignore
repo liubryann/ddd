@@ -1,4 +1,10 @@
 .vscode/*
 demo.mov
 backend/dump.json
+backend/__pycache__/
+backend/webscraper/__pycache__/
+backend/redis/__pycache__/
 backend/__pycache__/server.cpython-37.pyc
+webscraper/test.json
+webscraper/test1.json
+backend/dump.json

@@ -1,4 +1,4 @@
 /node_modules
-.env
 webscraper/.env
 **/__pycache__
+*.json

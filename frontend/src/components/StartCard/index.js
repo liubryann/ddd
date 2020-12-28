@@ -11,6 +11,7 @@ const useStyles = (title) => makeStyles((theme) => ({
         backgroundColor: theme.palette.primary.main,
         borderRadius: '10px',
         flex: 1,
+        maxWidth: '584px'
     },
     root: {
         display: 'flex',
