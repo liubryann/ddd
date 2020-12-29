@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         display: 'flex',
         flexDirection: 'column',
+        justifyContent: 'flex-start',
         padding: theme.spacing(3)
     },
     grid: {
@@ -27,16 +28,21 @@ const useStyles = makeStyles((theme) => ({
         height: '90%',
         color: theme.palette.text.secondary,
     },
+    rowWrapper: {
+        flexGrow: 1,
+        flexShrink: 0, 
+        flexBasis:400,
+    },
     row: {
         flexGrow: 1,
         flexShrink: 0, 
         flexBasis:200,
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
     info: {
         flexGrow: 0.13,
-        flexBasis: 350,
+        flexBasis: 344,
         flexShrink: 0,
         margin: theme.spacing(1.5)
     },
@@ -80,7 +86,16 @@ function Home(props) {
                     {data ? <Graph key={key} data={data} info={info} /> : <div></div> }
                 </div>
             </div>
-            <div className={classes.row}>
+
+            <div className={classes.rowWrapper}>
+                <div className={classes.sentiment}>
+                    {analysis ? <Analysis key={key} type="Individual" posts={individual} /> : <div></div> }          
+                </div>
+                <div className={classes.sentiment}>
+                    {analysis ? <Analysis key={key} type="Institutional" posts={institutional} /> : <div></div> }
+                </div>
+            </div>
+            {/* <div className={classes.row}>
                 <div className={classes.sentiment}>
                     {analysis ? <Analysis key={key} type="Individual" posts={individual} /> : <div></div> }          
                 </div>
@@ -89,7 +104,7 @@ function Home(props) {
                 <div className={classes.sentiment}>
                     {analysis ? <Analysis key={key} type="Institutional" posts={institutional} /> : <div></div> }
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }

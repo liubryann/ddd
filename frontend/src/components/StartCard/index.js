@@ -5,14 +5,7 @@ import { Typography } from "@material-ui/core";
 import IndividualSvg from '../../images/individual.svg';
 import InstitutionalSvg from '../../images/institutional.svg'; 
 
-const useStyles = (title) => makeStyles((theme) => ({
-    background: {
-        padding: theme.spacing(1.5),
-        backgroundColor: theme.palette.primary.main,
-        borderRadius: '10px',
-        flex: 1,
-        maxWidth: '584px'
-    },
+const useStyles = (title, width) => makeStyles((theme) => ({
     root: {
         display: 'flex',
         flexDirection: 'row',
@@ -21,6 +14,9 @@ const useStyles = (title) => makeStyles((theme) => ({
         borderRadius: '10px',
         padding: theme.spacing(2),
         height: "200px",
+        flex: 1,
+        maxWidth: width,
+        margin: theme.spacing(1.5)
     },
     img: {
         width: title === 'Individual' ? '50%' : '60%',
@@ -37,8 +33,8 @@ const useStyles = (title) => makeStyles((theme) => ({
 }));  
 
 function AnalysisCard(props) {
-    const { title } = props; 
-    const classes = useStyles(title)();
+    const { title, width } = props; 
+    const classes = useStyles(title, width)();
 
     return (
         <div className={classes.background}>

@@ -22,6 +22,8 @@ function Analysis({ type, posts }) {
 
     const size = useWindowSize()
 
+    
+
     var slicedPosts = []
     var sliceSize = 4; 
     if (size.width <= 1230) {
@@ -30,6 +32,8 @@ function Analysis({ type, posts }) {
     else if (size.width <= 1700) {
         sliceSize = 3; 
     }
+
+    const cardSize = Math.floor(size.width / sliceSize - 67)
 
     for (var i = 0; i < posts.length; i += sliceSize) {
         slicedPosts.push(posts.slice(i, i + sliceSize))
@@ -46,7 +50,7 @@ function Analysis({ type, posts }) {
                 <div className={classes.carousel}> 
                     {
                         slice.map((post) => 
-                            post.title === 'Individual' || post.title === 'Institutional' ? <StartCard title={post.title} /> :
+                            post.title === 'Individual' || post.title === 'Institutional' ? <StartCard title={post.title} width={cardSize}/> :
                             <AnalysisCard 
                                 key={i}
                                 title={post.title} 
@@ -54,6 +58,7 @@ function Analysis({ type, posts }) {
                                 sentiment={post.sentiment}
                                 time={post.time}
                                 link={post.link}
+                                width={cardSize}
                             />
                         )
                      }

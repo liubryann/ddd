@@ -54,7 +54,7 @@ const ranges = [
 function Search(props) {
     const classes = useStyles();
     const [query, setQuery] = useState({
-        range: '1d',
+        range: '1mo',
         symbol: ''
     }); 
     const [error, setError] = useState(false); 
@@ -90,7 +90,7 @@ function Search(props) {
     useEffect(async () => {
         let searchParams = {
             symbol: 'TSLA',
-            date: '1d'
+            date: '1mo'
         }
 
         JSON.stringify(searchParams)

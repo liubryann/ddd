@@ -46,10 +46,6 @@ function Graph({data, info}) {
                 <ValueAxis />
                 <LineSeries valueField="Close" argumentField={"Date"} color={info.color}/>
 
-                <Title 
-                    text={"Price Chart"}
-                    textComponent={TextComponent}
-                />
                 <EventTracker />
                 <Tooltip />
                 <Animation />

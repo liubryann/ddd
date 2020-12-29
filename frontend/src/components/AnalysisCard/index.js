@@ -6,14 +6,7 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import SentimentRating from '../../components/SentimentRating';
 
 
-const useStyles = makeStyles((theme) => ({
-    background: {
-        padding: theme.spacing(1.5),
-        backgroundColor: theme.palette.primary.main,
-        borderRadius: '10px',
-        flex: 1,
-        maxWidth: '584px'
-    },
+const useStyles = (width) => makeStyles((theme) => ({
     root: {
         display: 'flex',
         flexDirection: 'row',
@@ -21,7 +14,10 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: '#fff',
         borderRadius: '10px',
         padding: theme.spacing(2),
-        height: "200px",   
+        height: "200px",  
+        flex: 1,
+        maxWidth: width, 
+        margin: theme.spacing(1.5)
     },
     details: {
         display: 'flex',
@@ -32,6 +28,11 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+        marginBottom: theme.spacing(.5)
+    },
+    sentiment: {
+        display: 'flex',
+        flexDirection: 'row',
         marginBottom: theme.spacing(1)
     },
     title: {
@@ -40,11 +41,11 @@ const useStyles = makeStyles((theme) => ({
     },  
     content: {
         color: "#9e9e9e",
+        height: '110px',
         overflow: 'hidden'
     }, 
     time: {
-        marginLeft: 'auto',
-        marginRight: 0,
+        marginRight: theme.spacing(1),
         color: "#757575"
     },
     footer: {
@@ -65,17 +66,21 @@ const useStyles = makeStyles((theme) => ({
 }));  
 
 function AnalysisCard(props) {
-    const { title, summary, sentiment, link, time } = props; 
-    const classes = useStyles();
+    const { title, summary, sentiment, link, time, width } = props; 
+    console.log(width)
+    const classes = useStyles(width)();
 
     return (
         <div className={classes.background}>
             <div className={classes.root}>
                 <div className={classes.details}>
                     <div className={classes.header}>
-                        <Typography className={classes.title} variant="subtitle1">{ title }</Typography>
-                        <SentimentRating rating={sentiment} />
+                        <Typography className={classes.title} variant="body2">{ title }</Typography>
+                    </div>
+                     
+                    <div  className={classes.sentiment}>
                         <Typography className={classes.time} variant="subtitle2">{ time }</Typography>
+                        <SentimentRating rating={sentiment} />
                     </div>
 
                     <div>
