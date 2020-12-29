@@ -1,6 +1,6 @@
 import yfinance as yf
-from backend.webscraper.scraper import scrape
-from backend.process import analyze
+from webscraper.scraper import scrape
+from process import analyze
 import random
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin

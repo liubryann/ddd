@@ -1,4 +1,4 @@
-from backend.nlp.nlp import process
+from nlp.nlp import process
 from argparse import ArgumentParser
 import json
 import concurrent.futures as cf
