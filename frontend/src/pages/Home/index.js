@@ -80,7 +80,16 @@ function Home(props) {
         <div className={classes.background}>
             <div className={classes.row}>
                 <div className={classes.info}>
-                {data ? <StockInfo key={key} info={info} /> : <div></div> }
+                    {
+                        data ? 
+                        <StockInfo 
+                            key={key} 
+                            info={info} 
+                            individualAverage={individualAverage} 
+                            institutionalAverage={institutionalAverage} 
+                        /> 
+                        : <div></div> 
+                    }
                 </div>
                 <div className={classes.graph}>
                     {data ? <Graph key={key} data={data} info={info} /> : <div></div> }
@@ -95,16 +104,6 @@ function Home(props) {
                     {analysis ? <Analysis key={key} type="Institutional" posts={institutional} /> : <div></div> }
                 </div>
             </div>
-            {/* <div className={classes.row}>
-                <div className={classes.sentiment}>
-                    {analysis ? <Analysis key={key} type="Individual" posts={individual} /> : <div></div> }          
-                </div>
-            </div>
-            <div className={classes.row}>
-                <div className={classes.sentiment}>
-                    {analysis ? <Analysis key={key} type="Institutional" posts={institutional} /> : <div></div> }
-                </div>
-            </div> */}
         </div>
     )
 }
