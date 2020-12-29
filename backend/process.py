@@ -23,8 +23,14 @@ def feeling(num, mag):
     return feeling
 
 
+# def truncate_text(text):
+#     return " ".join(text.split(" ")[:66]).strip() + "..."
+
 def truncate_text(text):
-    return " ".join(text.split(" ")[:81]).strip() + "..."
+    return text[:300] + "..."
+
+def truncate_title(title):
+    return title[:40] + "..."
 
 
 def analyze(data):
@@ -46,14 +52,27 @@ def analyze(data):
             result["summary"] = result["summary"].replace("\n", " ").strip()
             summary = (
                 result["summary"]
-                if len(result["summary"]) < 400
+                if len(result["summary"]) < 300
                 else truncate_text(result["summary"])
             )
+        
+        if entry["title"] == "":
+            title = truncate_title(entry["title"])
+        else: 
+            entry["title"] = entry["title"].replace("\n", " ").strip()
+            title = (
+                entry["title"]
+                if len(entry["title"]) < 40
+                else truncate_title(entry["title"])
+            )
+
+        
 
         total_sentiment += sentiment_result["sentiment"]
         total_magnitude += sentiment_result["magnitude"]
         entry.update(
             {
+                "title": title,
                 "summary": summary,
                 "sentiment": feeling(
                     sentiment_result["sentiment"],
@@ -67,7 +86,6 @@ def analyze(data):
     with cf.ThreadPoolExecutor(1000) as executor:
         for index in range(len(data)):
             executor.submit(analyze_subprocess, data[index])
-
     count = len(data)
     avg_sentiment = 0
     if count != 0:

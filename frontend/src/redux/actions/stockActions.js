@@ -4,20 +4,6 @@ import api from '../../util/api';
 
 export const getAnalysis = (query) => (dispatch) => {
     dispatch({ type: ANALYSIS_START });
-    // api.get('/getAnalysis', { params: query })
-    //     .then((res) => {
-    //         console.log(res.data);
-    //         dispatch({
-    //             type: SET_ANALYSIS,
-    //             payload: res.data
-    //         });
-    //     })
-    //     .catch((err) => {
-    //         dispatch({
-    //             type: ANALYSIS_ERROR,
-    //             payload: err.response.data
-    //         })
-    //     })
 
     api.get('/getTickerData', { params: query})
         .then((res) => {
@@ -29,6 +15,25 @@ export const getAnalysis = (query) => (dispatch) => {
                 type: SET_TICKER_DATA,
                 payload: res.data
             })
+
+            query.symbol = res.data.info.shortName;
+
+            api.get('/getAnalysis', { params: query })
+            .then((res) => {
+                res.data.individual.unshift({ title: "Individual"})
+                res.data.institutional.unshift({ title: "Institutional"})
+                dispatch({
+                    type: SET_ANALYSIS,
+                    payload: res.data
+                });
+            })
+            .catch((err) => {
+                dispatch({
+                    type: ANALYSIS_ERROR,
+                    payload: err.response.data
+                })
+            })
+
         })
         .catch((err) => {
             console.log(err)
