@@ -5,6 +5,8 @@ import { Typography } from "@material-ui/core";
 import IndividualSvg from '../../images/individual.svg';
 import InstitutionalSvg from '../../images/institutional.svg'; 
 
+import SentimentRating from '../../components/SentimentRating';
+
 const useStyles = (title, width) => makeStyles((theme) => ({
     root: {
         display: 'flex',
@@ -24,16 +26,24 @@ const useStyles = (title, width) => makeStyles((theme) => ({
         marginLeft: 'auto',
         marginRight: theme.spacing(3)
     },
-    title: {
+    header: {
         position: 'absolute',
         zIndex: 1,
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    title: {
+        color: '#fff',
+        fontWeight: 'bold'
+    },
+    average: {
         color: '#fff',
         fontWeight: 'bold'
     }
 }));  
 
 function AnalysisCard(props) {
-    const { title, width } = props; 
+    const { title, width, rating } = props; 
     const classes = useStyles(title, width)();
 
     return (
@@ -42,7 +52,11 @@ function AnalysisCard(props) {
                 <img 
                     src={title === "Individual" ? IndividualSvg : InstitutionalSvg} 
                     className={classes.img} />
-                <Typography variant="h4" className={classes.title}>{title}</Typography>
+                <div className={classes.header}>
+                    <Typography variant="h4" className={classes.title}>{title}</Typography>
+                    <Typography variant="body1" className={classes.average}>Average: </Typography>
+                    <SentimentRating rating={rating} />
+                </div>
             </div>
         </div>
     )

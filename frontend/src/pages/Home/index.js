@@ -63,12 +63,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Home(props) {
-    const { tickerData } = props.stock || {}
+    const { dataAndAnalysis } = props.stock || {}
+
+    const { tickerData } = dataAndAnalysis || {}
     const { data } = tickerData || {}
     const { info } = tickerData || {}
     const { key } = tickerData || {}
 
-    const { analysis } = props.stock || {}
+    const { analysis } = dataAndAnalysis || {}
     const { individual } = analysis || {}
     const { individualAverage } = analysis || {} 
     const { institutional } = analysis || {}
@@ -85,8 +87,6 @@ function Home(props) {
                         <StockInfo 
                             key={key} 
                             info={info} 
-                            individualAverage={individualAverage} 
-                            institutionalAverage={institutionalAverage} 
                         /> 
                         : <div></div> 
                     }
@@ -98,10 +98,10 @@ function Home(props) {
 
             <div className={classes.rowWrapper}>
                 <div className={classes.sentiment}>
-                    {analysis ? <Analysis key={key} type="Individual" posts={individual} /> : <div></div> }          
+                    {analysis ? <Analysis key={key} posts={individual} rating={individualAverage} /> : <div></div> }          
                 </div>
                 <div className={classes.sentiment}>
-                    {analysis ? <Analysis key={key} type="Institutional" posts={institutional} /> : <div></div> }
+                    {analysis ? <Analysis key={key} posts={institutional} rating={institutionalAverage} /> : <div></div> }
                 </div>
             </div>
         </div>
