@@ -67,7 +67,6 @@ const useStyles = (width) => makeStyles((theme) => ({
 
 function AnalysisCard(props) {
     const { title, summary, sentiment, link, time, width } = props; 
-    console.log(width)
     const classes = useStyles(width)();
 
     return (

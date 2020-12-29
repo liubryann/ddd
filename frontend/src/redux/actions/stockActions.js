@@ -1,4 +1,4 @@
-import { ANALYSIS_START, SET_ANALYSIS, ANALYSIS_ERROR, SET_TICKER_DATA, SET_TICKER_ERROR } from '../types';
+import { ANALYSIS_START, ANALYSIS_ERROR, SET_TICKER_ERROR, SET_DATA_AND_ANALYSIS } from '../types';
 
 import api from '../../util/api';
 
@@ -11,10 +11,8 @@ export const getAnalysis = (query) => (dispatch) => {
                 tick.Date = new Date(tick.Date)
             })
 
-            dispatch({
-                type: SET_TICKER_DATA,
-                payload: res.data
-            })
+            var dataAndAnalysis = {}
+            dataAndAnalysis.tickerData = res.data;
 
             query.symbol = res.data.info.shortName;
 
@@ -22,10 +20,13 @@ export const getAnalysis = (query) => (dispatch) => {
             .then((res) => {
                 res.data.individual.unshift({ title: "Individual"})
                 res.data.institutional.unshift({ title: "Institutional"})
+
+                dataAndAnalysis.analysis = res.data
+               
                 dispatch({
-                    type: SET_ANALYSIS,
-                    payload: res.data
-                });
+                    type: SET_DATA_AND_ANALYSIS,
+                    payload: dataAndAnalysis
+                })
             })
             .catch((err) => {
                 dispatch({

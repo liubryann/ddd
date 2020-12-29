@@ -17,12 +17,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function Analysis({ type, posts }) {
+function Analysis({ posts, rating }) {
     const classes = useStyles();
 
     const size = useWindowSize()
-
-    
 
     var slicedPosts = []
     var sliceSize = 4; 
@@ -50,7 +48,7 @@ function Analysis({ type, posts }) {
                 <div className={classes.carousel}> 
                     {
                         slice.map((post) => 
-                            post.title === 'Individual' || post.title === 'Institutional' ? <StartCard title={post.title} width={cardSize}/> :
+                            post.title === 'Individual' || post.title === 'Institutional' ? <StartCard title={post.title} width={cardSize} rating={rating} /> :
                             <AnalysisCard 
                                 key={i}
                                 title={post.title} 

@@ -29,14 +29,9 @@ const useStyles = info => makeStyles((theme) => ({
     rounded: {
         borderRadius: '10px'
     },
-    sentiment: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
 }));
 
-function StockInfo({ info, individualAverage, institutionalAverage }) {
+function StockInfo({ info }) {
     const classes = useStyles(info)();
 
     return (
@@ -46,15 +41,7 @@ function StockInfo({ info, individualAverage, institutionalAverage }) {
                 <Typography variant="h4" className={classes.priceSpacing}>{info.curr}</Typography>
                 <Typography variant="h6" color="textSecondary" className={classes.spacing}>{info.currency}</Typography>
                 <Typography variant="h6" color="primary" classes={{ colorPrimary: classes.textColor }} >{info.difference + " (" + info.percentChange + "%)"}</Typography>
-            </div>     
-            <div className={classes.sentiment}> 
-                    <Typography className={classes.spacing} variant="h6">Individual Average: </Typography>
-                    <SentimentRating rating={individualAverage}/> 
-            </div>    
-            <div className={classes.sentiment}> 
-                    <Typography className={classes.spacing} variant="h6">Institutional Average: </Typography>
-                    <SentimentRating rating={institutionalAverage}/> 
-            </div>  
+            </div>      
         </Paper>
     )
 }
