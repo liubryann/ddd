@@ -10,7 +10,8 @@ import store from './redux/store';
 // Router 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 // Components 
-import NavBar from './components/NavBar';
+import NavBar from './components/NavBar'
+import ErrorBoundary from './components/ErrorBoundary';
 // Pages 
 import Home from './pages/Home';
 
@@ -18,16 +19,18 @@ const theme = createMuiTheme(themeObj);
 
 function App() {
   return (
-    <MuiThemeProvider theme={theme}>
-      <Provider store={store}>
-        <Router>
-          <NavBar />
-            <Switch>
-              <Route exact path="/" component={Home}/>
-            </Switch>
-        </Router>
-      </Provider>
-    </MuiThemeProvider>
+    <ErrorBoundary>
+      <MuiThemeProvider theme={theme}>
+        <Provider store={store}>
+          <Router>
+            <NavBar />
+              <Switch>
+                <Route exact path="/" component={Home}/>
+              </Switch>
+          </Router>
+        </Provider>
+      </MuiThemeProvider>
+    </ErrorBoundary>
   );
 }
 
