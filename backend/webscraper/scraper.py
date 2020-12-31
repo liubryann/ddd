@@ -38,7 +38,7 @@ class Scraper:
         result = []
         with cf.ThreadPoolExecutor(1000) as executor:
             [
-                executor.submit(self.scrapeSubreddit, result, subreddit, 15)
+                executor.submit(self.scrapeSubreddit, result, subreddit, 5)
                 for subreddit in subreddits
             ]
         return result
@@ -54,7 +54,7 @@ class Scraper:
         except:
             timeframe = "month"
         result = self.reddit.subreddit(subreddit).search(
-            self.query, sort="relevance", time_filter=timeframe
+            self.query, sort="top", time_filter=timeframe
         )
         result.limit = limit
         self.postFormatter(result, data)
@@ -85,7 +85,8 @@ class Scraper:
 
     def scrapeNewsAPI(self):
         begin_date, end_date = self.getDates(self.time_filter)
-        begin_date = begin_date + relativedelta(days=+1)
+        if self.time_filter == "1mo":
+            begin_date = begin_date + relativedelta(days=+1)
         result = self.newsapi.get_everything(
             q=self.query,
             sources="bbc-news,bloomberg,cbc-news,financial-post,fortune",
@@ -120,7 +121,8 @@ class Scraper:
 
     def newsAPIFormatter(self, posts):
         retPosts = []
-        for post in posts["articles"]:
+        for index in range(min(25, len(posts["articles"]))):
+            post = posts["articles"][index]
             retPost = {}
             try:
                 retPost["title"] = self.clean(post["title"])
