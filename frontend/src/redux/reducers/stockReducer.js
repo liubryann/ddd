@@ -2,6 +2,7 @@ import { ANALYSIS_START, ANALYSIS_ERROR, SET_TICKER_ERROR, SET_DATA_AND_ANALYSIS
 
 const initialState = {
     loading: false, 
+    firstLoad: true,
     error: {},
     dataAndAnalysis: null,
 }
@@ -29,6 +30,7 @@ export default function(state = initialState, action) {
             return {
                 ...state,
                 loading: false, 
+                firstLoad: false,
                 errors: {},
                 dataAndAnalysis: action.payload
             }

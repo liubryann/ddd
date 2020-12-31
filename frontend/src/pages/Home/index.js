@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -9,6 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import Graph from '../../components/Graph';
 import StockInfo from '../../components/StockInfo';
 import Analysis from '../../components/Analysis';
+import FirstLoad from '../../components/FirstLoad'; 
 
 const useStyles = makeStyles((theme) => ({
     background: {
@@ -63,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Home(props) {
+    const { firstLoad } = props.stock || {}
     const { dataAndAnalysis } = props.stock || {}
 
     const { tickerData } = dataAndAnalysis || {}
@@ -80,6 +82,7 @@ function Home(props) {
 
     return (
         <div className={classes.background}>
+            {firstLoad && (<FirstLoad/>)}
             <div className={classes.row}>
                 <div className={classes.info}>
                     {
