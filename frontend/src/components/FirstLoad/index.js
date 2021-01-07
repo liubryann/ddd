@@ -19,7 +19,8 @@ const loadStrings = [
     "Scraping the web for articles...",
     "Analyzing the data...",
     "Predicting the sentiment...",
-    "Preparing the tendies..."
+    "Preparing the tendies...",
+    "If you're still here and reading this I swear it will work, our server is just hibernating"
 ]
 
 function FirstLoad() {

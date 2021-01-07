@@ -89,7 +89,7 @@ function Search(props) {
 
     useEffect(async () => {
         let searchParams = {
-            symbol: 'TSLA',
+            symbol: 'AC.TO',
             date: '1mo'
         }
 
