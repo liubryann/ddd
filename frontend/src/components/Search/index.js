@@ -89,7 +89,7 @@ function Search(props) {
 
     useEffect(async () => {
         let searchParams = {
-            symbol: 'AC.TO',
+            symbol: 'GME',
             date: '1mo'
         }
 
