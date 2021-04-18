@@ -7,7 +7,7 @@ Keep up with trending stocks through sentiment analyis.
 * Hot and trending stocks discovery 
 
 ## Feature Backlog 
-* Enchanced stock search assistance 
+* Enhanced stock search assistance 
 * Add more analytics such as Range, Volume, Market Cap etc.
 * Reduce queries to <1s with Redis cache
 * Refine the sentiment model for more accurate predictions 
